@@ -1,0 +1,139 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("connect", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            headless: {
+                value: "no"
+            },
+            link: {
+                value: ""
+            },
+            payloadTypelink: {
+                value: "str"
+            },
+            connectionType: {
+                value: "new"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "connect"
+        },
+        paletteLabel: "connect",
+        exportable: true,
+        oneditprepare: function() {
+            const headlessselectFieldValues = ["yes", "no"]
+            headlessselectFieldValues.forEach((val) => {
+                $("#node-input-headless").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-headless").val(this.headless)
+
+            if (this.payloadTypelink === null) {
+                if (this.link === "") {
+                    this.payloadTypelink = "date"
+                } else {
+                    this.payloadTypelink = "str"
+                }
+            } else if (this.payloadTypelink === 'string' || this.payloadTypelink === 'none') {
+                this.payloadTypelink = "str"
+            }
+
+            $("#node-input-payloadTypelink").val(this.payloadTypelink)
+            $("#node-input-link").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypelink"),
+                types: ["str", "msg", "global", "flow"]
+            })
+            $("#node-input-link").typedInput("type", this.payloadTypelink)
+
+
+            const connectionTypeFieldSetNames = ["new", "existing"]
+            connectionTypeFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-connectionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-connectionType").val(this.connectionType)
+            $("#node-input-connectionType").on("change", (e) => {
+                const newFieldSet = e.target.value
+                connectionTypeFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-connectionType").val(e.target.value)
+            })
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="connect">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-connectionType">connectionType</label>
+        <select type="text" id="node-input-connectionType">
+        </select>
+    </div>
+    <div id="fieldset-new" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-headless">Show browser</label>
+            <select type="text" id="node-input-headless">
+            </select>
+        </div>
+    </div>
+
+    <div id="fieldset-existing" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-link">WS link</label>
+            <input type="text" id="node-input-link"></input>
+            <input type="hidden" id="node-input-payloadTypelink">
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="connect">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

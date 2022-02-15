@@ -1,0 +1,44 @@
+{
+  "name": "maya-red-browser-control",
+  "version": "1.0.0",
+  "description": "Advanced browser automation using Maya",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayahq/maya-red-browser-control.git"
+  },
+  "author": "dush-t",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mayahq/mayadev/issues"
+  },
+  "homepage": "https://github.com/mayahq/maya-red-browser-control#readme",
+  "nodepath": "src/nodes",
+  "nodeRedModuleName": "maya-red-browser-control",
+  "node-red": {
+    "nodes": {
+      "connect": "src/nodes/connect/connect.node.js",
+      "click": "src/nodes/click/click.node.js",
+      "open-page": "src/nodes/openPage/openPage.node.js"
+    }
+  },
+  "mayaDetails": {
+    "name": "maya-red-browser-control",
+    "version": "1.0.0",
+    "description": "Advanced browser automation using Maya",
+    "author": "dush-t",
+    "type": "git",
+    "needsUserProfile": false,
+    "thumbnail": "",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mayahq/maya-red-browser-control.git"
+    }
+  },
+  "dependencies": {
+    "@mayahq/module-sdk": "^0.4.11",
+    "node-ipc": "^10.1.0",
+    "puppeteer-core": "^13.3.1"
+  }
+}
