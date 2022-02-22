@@ -39,6 +39,8 @@
   "dependencies": {
     "@mayahq/maya-db": "^0.0.4",
     "@mayahq/module-sdk": "^0.4.11",
+    "axios": "^0.21.4",
+    "chrome-launcher": "^0.15.0",
     "node-ipc": "^10.1.0",
     "puppeteer-core": "^13.3.1"
   }

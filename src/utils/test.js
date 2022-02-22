@@ -14,9 +14,17 @@ ipc.connectTo(
         ipc.of.pcs.on('connect', () => {
             ipc.log('## Connected to pcs ##', ipc.config.delay)
             ipc.of.pcs.emit('maya.message', {
+                type: 'maya.message',
                 id: ipc.config.id,
                 message: 'hello'
             })
+            setTimeout(() => {
+                ipc.of.pcs.emit('maya.message', {
+                    type: 'maya.message',
+                    id: ipc.config.id,
+                    message: 'hello'
+                })
+            }, 2000)
         })
 
         ipc.of.pcs.on('disconnect', () => {
@@ -24,7 +32,13 @@ ipc.connectTo(
             console.log('### Disconnected')
         })
 
+        ipc.of.pcs.once('maya.message', (data) => {
+            console.log('bruh 1')
+            // ipc.log('## Got message from pcs ##', data)
+        })
+
         ipc.of.pcs.on('maya.message', (data) => {
+            console.log('bruh 2')
             // ipc.log('## Got message from pcs ##', data)
         })
 
