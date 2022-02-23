@@ -2,11 +2,12 @@ const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const { fork, spawn } = require('child_process');
-
 const { default: ipc, IPCModule } = require('node-ipc')
 
+const BROWSER_START_STOP_TIMEOUT = 60 * 1000
+
 class LocalInstanceControl {
-    constructor({ mayaDir = '.mayadev' }) {
+    constructor({ mayaDir = '.mayadev' } = {}) {
         this.sockpath = path.join(os.homedir(), `${mayaDir}/pupsock`)
         this.ipcComm = null
         this.ipc = null
@@ -28,6 +29,9 @@ class LocalInstanceControl {
                     })
 
                     testIPC.of.ping.on('error', (e) => {
+                        try {
+                            testIPC.disconnect('ping')
+                        } catch (e) {}
                         testIPC.config.stopRetrying = true
                         resolve(false)
                     })
@@ -63,28 +67,61 @@ class LocalInstanceControl {
     async init() {
         const running = await this._isServerRunning()
         if (!running) {
+            console.log('Server not running, so starting')
             await this._startServer()
         }
         
         const ipcMod = new IPCModule()
+        ipcMod.config.silent = true
         this.ipc = ipcMod
-        ipcMod.connectTo(
-            'mayaBrowserControl',
-            this.sockpath,
-            () => {
-                ipcMod.of.mayaBrowserControl.on('connect', () => {
-                    this.client = this.ipc.of.mayaBrowserControl
-                    console.log('Connected to maya puppeteer controller')
-                })
 
-                ipcMod.of.mayaBrowserControl.on('disconnect', () => {
-                    console.log('Disconnected from maya puppeteer controller')
-                })
-            }
-        )
+        await new Promise((resolve, reject) => {
+            ipcMod.connectTo(
+                'mayaBrowserControl',
+                this.sockpath,
+                () => {
+                    ipcMod.of.mayaBrowserControl.on('connect', () => {
+                        console.log('Connected to maya puppeteer controller')
+                        resolve()
+                    })
+
+                    ipcMod.of.mayaBrowserControl.on('disconnect', () => {
+                        console.log('Disconnected from maya puppeteer controller')
+                    })
+
+                    ipcMod.of.mayaBrowserControl.on('error', (e) => {
+                        console.log('Error connecting to controller', e)
+                    })
+
+                }
+            )
+        })
+
     }
 
-    startBrowser({ headless }, timeout) {
+    async killController() {
+        const running = await this._isServerRunning()
+        if (!running) {
+            return
+        }
+
+        await new Promise((resolve, reject) => {
+            const id = (Math.random() * 100000000).toString()
+            this.ipc.of.mayaBrowserControl.once(`maya::controller_kill::${id}`, (msg) => {
+                if (msg.status === 'KILLED') {
+                    console.log('Controller process killed')
+                } else {
+                    console.log('Error killing controller process')
+                }
+                resolve()
+            })
+            this.ipc.of.mayaBrowserControl.emit('maya::controller_kill', { id })
+        })
+
+        return
+    }
+
+    startBrowser({ headless }, timeout = BROWSER_START_STOP_TIMEOUT) {
         return new Promise((resolve, reject) => {
             const id = (Math.random() * 100000000).toString()
             const browserStartMessage = {
@@ -94,10 +131,10 @@ class LocalInstanceControl {
                     headless
                 }
             }
-            this.client.emit('maya::browser_start', browserStartMessage)
+            this.ipc.of.mayaBrowserControl.emit('maya::browser_start', browserStartMessage)
             const tm = setTimeout(() => reject({ error: 'Timed out' }), timeout)
 
-            this.client.once(`maya::browser_start::${id}`, (msg) => {
+            this.ipc.of.mayaBrowserControl.once(`maya::browser_start::${id}`, (msg) => {
                 clearTimeout(tm)
                 switch (msg.status) {
                     case 'STARTED': {
@@ -121,31 +158,28 @@ class LocalInstanceControl {
         })
     }
 
-    stopBrowser({ connectionId, timeout }) {
+    stopBrowser({ connectionId }, timeout = BROWSER_START_STOP_TIMEOUT) {
         return new Promise((resolve, reject) => {
             const id = (Math.random() * 100000000).toString()
             const browserStopMessage = {
                 id: id,
                 connectionId: connectionId,
-                type: 'maya::browser_stop',
-                payload: {
-                    headless
-                }
+                type: 'maya::browser_stop'
             }
-            this.client.emit('maya::browser_stop', browserStopMessage)
+            this.ipc.of.mayaBrowserControl.emit('maya::browser_stop', browserStopMessage)
             const tm = setTimeout(() => reject({ error: 'Timed out' }), timeout)
             
-            this.client.once(`maya::browser_stop::${id}`, (msg) => {
+            this.ipc.of.mayaBrowserControl.once(`maya::browser_stop::${id}`, (msg) => {
                 clearTimeout(tm)
                 switch (msg.status) {
                     case 'STOPPED': {
                         console.log('Browser was stopped')
-                        this.disconnectFromController()
+                        // this.disconnectFromController()
                         return resolve()
                     }
                     case 'ALREADY_STOPPED': {
                         console.log('Browser was already stopped')
-                        this.disconnectFromController()
+                        // this.disconnectFromController()
                         return resolve()
                     }
                     case 'ERROR': {
@@ -162,15 +196,23 @@ class LocalInstanceControl {
     }
 
     disconnectFromController() {
-        this.ipc.disconnect('mayaBrowserControl')
+        try {
+            this.ipc.disconnect('mayaBrowserControl')
+        } catch (e) {}
     }
 }
 
-// const exists = fs.existsSync('/Users/dushyant/.mayadev/pupsock')
-// console.log(exists)
+const lic = new LocalInstanceControl()
+lic.init()
+    .then(async () => {
+        // await lic.killController()
+        // process.exit(0)
+        // return
 
-// const lic = new LocalInstanceControl({ mayaDir: '.mayadev' })
-// lic._isServerRunning()
-//     .then(res => console.log(res))
+        const {connectionId} = await lic.startBrowser({ headless: false })
+        setTimeout(async () => {
+            await lic.stopBrowser({ connectionId })
+        }, 7000)
+    })
 
 module.exports = LocalInstanceControl

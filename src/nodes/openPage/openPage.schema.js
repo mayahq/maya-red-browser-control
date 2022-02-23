@@ -6,6 +6,12 @@ const {
 const puppeteer = require('puppeteer-core')
 
 const DAT = ['str', 'msg', 'flow', 'global']
+const waitOptions = [
+    'networkidle0',
+    'networkidle2',
+    'load',
+    'domcontentloaded'
+]
 
 class OpenPage extends Node {
     constructor(node, RED, opts) {
@@ -21,7 +27,8 @@ class OpenPage extends Node {
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {
-            url: new fields.Typed({ type: 'msg', allowedTypes: DAT, displayName: 'URL', defaultVal: 'url' })
+            url: new fields.Typed({ type: 'msg', allowedTypes: DAT, displayName: 'URL', defaultVal: 'url' }),
+            waitUntil: new fields.Select({ defaultVal: 'networkidle2', options: waitOptions})
         },
 
     })
@@ -40,7 +47,9 @@ class OpenPage extends Node {
          */
         const browser = msg._browser
         const page = await browser.newPage()
-        const page = await browser.goto(vals.url)
+        await browser.goto(vals.url, {
+            waitUntil: vals.waitUntil
+        })
         msg.pages = [page]
         return msg
     }

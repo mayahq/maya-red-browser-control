@@ -20,7 +20,8 @@
     "nodes": {
       "connect": "src/nodes/connect/connect.node.js",
       "click": "src/nodes/click/click.node.js",
-      "open-page": "src/nodes/openPage/openPage.node.js"
+      "open-page": "src/nodes/openPage/openPage.node.js",
+      "maya-browser-control-disconnect": "src/nodes/mayaBrowserControlDisconnect/mayaBrowserControlDisconnect.node.js"
     }
   },
   "mayaDetails": {

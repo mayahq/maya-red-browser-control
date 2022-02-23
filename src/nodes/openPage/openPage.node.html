@@ -1,0 +1,108 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("open-page", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            url: {
+                value: "url"
+            },
+            payloadTypeurl: {
+                value: "msg"
+            },
+            waitUntil: {
+                value: "networkidle2"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "open-page"
+        },
+        paletteLabel: "open-page",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypeurl === null) {
+                if (this.url === "") {
+                    this.payloadTypeurl = "date"
+                } else {
+                    this.payloadTypeurl = "msg"
+                }
+            } else if (this.payloadTypeurl === 'string' || this.payloadTypeurl === 'none') {
+                this.payloadTypeurl = "msg"
+            }
+
+            $("#node-input-payloadTypeurl").val(this.payloadTypeurl)
+            $("#node-input-url").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypeurl"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-url").typedInput("type", this.payloadTypeurl)
+
+            const waitUntilselectFieldValues = ["networkidle0", "networkidle2", "load", "domcontentloaded"]
+            waitUntilselectFieldValues.forEach((val) => {
+                $("#node-input-waitUntil").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-waitUntil").val(this.waitUntil)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="open-page">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-url">URL</label>
+        <input type="text" id="node-input-url"></input>
+        <input type="hidden" id="node-input-payloadTypeurl">
+    </div>
+    <div class="form-row">
+        <label for="node-input-waitUntil">waitUntil</label>
+        <select type="text" id="node-input-waitUntil">
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="open-page">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

@@ -5,7 +5,8 @@ const puppeteer = require('puppeteer-core')
 const { IPCModule } = require('node-ipc')
 const { localDb } = require('@mayahq/maya-db')
 
-const KILL_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+// const KILL_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+const KILL_TIMEOUT = 10 * 1000 // 5 minutes
 
 class PuppeteerControlServer {
     constructor() {
@@ -65,12 +66,16 @@ class PuppeteerControlServer {
         console.log('Got connection command', connectionId)
         const connStore = this.db.block('connections')
         const wsEndpoint = await connStore.acquireLock(async () => {
+            // console.log('Acquired lock for connect')
             const result = await connStore.get({
-                connections: {},
+                connections: [],
                 wsEndpoint: ''
             })
-            const connections = {...result.connections}
-            connections[connectionId] = Date.now()
+            const connections = [...result.connections]
+            connections.push({
+                id: connectionId,
+                created: Date.now()
+            })
 
             // If browser already running, just return its endpoint
             const pupInstance = await this._browserRunning(result.wsEndpoint)
@@ -90,6 +95,7 @@ class PuppeteerControlServer {
         // Removing the kill timeout. Closing the browser is now the
         // responsibility of this connection.
         if (this.killTimer) {
+            console.log('Removing browser kill timer')
             clearTimeout(this.killTimer)
         }
 
@@ -98,40 +104,51 @@ class PuppeteerControlServer {
     }
 
     async disconnect(connectionId, opts) {
-        console.log('Got disconnection command', connectionId)
+        console.log('\n\n\nGot disconnection command', connectionId)
         const connStore = this.db.block('connections')
         await connStore.acquireLock(async () => {
+            // console.log('Acquired lock for disconnect')
             const result = await connStore.get({
-                connections: {},
+                connections: [],
                 wsEndpoint: ''
             })
 
             // If no connection with given ID found, nothing to be done.
-            const connections = {...result.connections}
-            if (!connections[connectionId]) {
+            const connections = [...result.connections]
+            console.log('connections', connectionId, connections)
+
+            if (!connections.some(c => c.id === connectionId)) {
                 console.log(`No connection with id ${connectionId} found. Aborting.`)
                 return
             }
 
             // If other connections are left after removing the current on,
             // do nothing
-            delete connections[connectionId]
-            if (Object.keys(connections) > 0) {
-                console.log('Connections still left:', connectionId, connections)
-                return await connStore.lockAndSet({ connections })
+            const newConnections = connections.filter(c => c.id !== connectionId)
+            console.log(newConnections)
+            if (newConnections.length > 0) {
+                console.log('Connections still left:', connectionId, newConnections)
+                console.log('Setting these', connectionId)
+                // const res = await connStore.set({ connections: newConnections })
+                const res = await connStore.update({
+                    connections: { $set: newConnections }
+                })
+                console.log('res', connectionId, res)
+                return 
             }
 
             // Otherwise schedule the browser to close after some amount
             // (5 minutes, currently) of time            
-            await connStore.lockAndSet({
-                connections: connections,
-                wsEndpoint: ''
+            await connStore.update({
+                connections: { $set: newConnections },
+                wsEndpoint: { $set: '' }
             })
             this.killTimer = setTimeout(() => {
                 console.log('Actually killing browser process', connectionId)
                 this._stopBrowser()
             }, KILL_TIMEOUT)
-            console.log(`Will kill browser process after ${KILL_TIMEOUT/(60*1000)} minutes`)
+            console.log(`Will kill browser process after ${KILL_TIMEOUT/1000} seconds`)
+            return
         })
     }
 
@@ -175,6 +192,14 @@ class PuppeteerControlServer {
                     })
             })
 
+            server.on('maya::controller_kill', (data, socket) => {
+                const { id } = data
+                server.emit(socket, `maya::controller_kill::${id}`, {
+                    status: 'KILLED'
+                })
+                setTimeout(() => process.exit(0), 2000)
+            })
+
             // this.ipc.server.on('maya.message', (data, socket) => {
             //     console.log('data', data)
             //     this.ipc.server.emit(socket, 'maya.message', {
@@ -193,10 +218,13 @@ process.on('message', async (msg) => {
     switch (msg.type) {
         case 'START_CONTROLLER': {
             const pcs = new PuppeteerControlServer()
-            pcs.start()
+            pcs.startServer()
             return process.send({
                 type: 'CONTROLLER_STARTED'
             })
+        }
+        case 'STOP_CONTROLLER': {
+            process.exit()
         }
         default: return
     }

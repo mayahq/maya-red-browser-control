@@ -5,6 +5,7 @@ const {
 } = require('@mayahq/module-sdk')
 
 const puppeteer = require('puppeteer-core')
+const LocalInstanceControl = require('../../utils/client')
 const BROWSER_BIN_PATH = '/Users/dushyant/Chromium.app/Contents/MacOS/Chromium'
 const USER_DATA_DIR = '/Users/dushyant/Library/Application Support/Google/Chrome'
 
@@ -44,20 +45,23 @@ class Connect extends Node {
 
         let browser
         if (connectionType === 'new') {
-            browser = await puppeteer.launch({
-                // executablePath: BROWSER_BIN_PATH,
-                channel: 'chrome',
-                headless: false,
-                userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
-                defaultViewport: null
-            })
-            const page = await browser.newPage()
-            await page.goto('https://www.youtube.com', {
-                waitUntil: 'networkidle2'
-            })
-            // console.log('browser', browser)
-            // console.log('page', page)
-            setTimeout(() => browser.close(), 10000)
+            const browserClient = new LocalInstanceControl()
+            await browserClient.init()
+            try {
+                const { connectionId, details } = browserClient.startBrowser({
+                    headless: false
+                })
+                const browser = await puppeteer.connect({
+                    browserWSEndpoint: details.wsEndpoint
+                })
+                msg._browser = browser
+                msg._connectionId = connectionId
+            } catch (e) {
+                msg.__error = e
+                msg.__isError = true
+            }
+            await browserClient.disconnectFromController()
+            return msg
         } else {
             const wsEndpoint = vals.connectionType.childValues.link
             browser = await puppeteer.connect({
