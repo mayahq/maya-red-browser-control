@@ -5,6 +5,7 @@ const { fork, spawn } = require('child_process');
 const { default: ipc, IPCModule } = require('node-ipc')
 
 const BROWSER_START_STOP_TIMEOUT = 60 * 1000
+const SERVER_HEARTBEAT_DURATION = 30 * 1000
 
 class LocalInstanceControl {
     constructor({ mayaDir = '.mayadev' } = {}) {
