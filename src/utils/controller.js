@@ -242,7 +242,3 @@ process.on('message', async (msg) => {
         default: return
     }
 })
-
-
-const pcs = new PuppeteerControlServer()
-pcs.startServer()

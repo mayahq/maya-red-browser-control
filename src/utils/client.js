@@ -8,7 +8,8 @@ const BROWSER_START_STOP_TIMEOUT = 60 * 1000
 const SERVER_HEARTBEAT_DURATION = 30 * 1000
 
 class LocalInstanceControl {
-    constructor({ mayaDir = '.mayadev' } = {}) {
+    constructor() {
+        const mayaDir = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
         this.sockpath = path.join(os.homedir(), `${mayaDir}/pupsock`)
         this.ipcComm = null
         this.ipc = null
@@ -203,17 +204,17 @@ class LocalInstanceControl {
     }
 }
 
-const lic = new LocalInstanceControl()
-lic.init()
-    .then(async () => {
-        // await lic.killController()
-        // process.exit(0)
-        // return
+// const lic = new LocalInstanceControl()
+// lic.init()
+//     .then(async () => {
+//         // await lic.killController()
+//         // process.exit(0)
+//         // return
 
-        const {connectionId} = await lic.startBrowser({ headless: false })
-        setTimeout(async () => {
-            await lic.stopBrowser({ connectionId })
-        }, 7000)
-    })
+//         const {connectionId} = await lic.startBrowser({ headless: false })
+//         setTimeout(async () => {
+//             await lic.stopBrowser({ connectionId })
+//         }, 7000)
+//     })
 
 module.exports = LocalInstanceControl

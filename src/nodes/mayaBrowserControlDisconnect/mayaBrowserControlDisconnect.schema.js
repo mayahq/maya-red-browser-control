@@ -28,8 +28,8 @@ class MayaBrowserControlDisconnect extends Node {
     }
 
     async onMessage(msg, vals) {
-        const { _connectionId } = msg
-        if (_connectionId) {
+        const connectionId = msg._connectionId
+        if (!connectionId) {
             console.log('No connection ID provided! Cannot close')
             this.setStatus('ERROR', 'No connection ID provided')
             msg.__error = new Error('No connection ID provided')
