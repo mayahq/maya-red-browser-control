@@ -22,6 +22,35 @@ class PuppeteerControlServer {
         })
 
         this.killTimer = null
+
+        setInterval(() => {
+            this._checkIntegrity()
+        }, (KILL_TIMEOUT/2))
+    }
+
+    async _checkIntegrity() {
+        const connBlock = this.db.block('connections')
+        await connBlock.acquireLock(async () => {
+            const { killAt } = await connBlock.get({
+                killAt: -1
+            })
+            // console.log('Checking integrity. KillAt =', killAt)
+
+            if (killAt < 0) {
+                return
+            } else {
+                if (Date.now() - killAt > 0) {
+                    console.log('Actually killing browser process')
+                    await this._stopBrowser()
+                    connBlock.update({
+                        wsEndpoint: { $set: '' },
+                        connections: { $set: [] },
+                        killAt: { $set: -1 }
+                    })
+                }
+            }
+        })
+
     }
 
     async _startBrowser(opts = {}) {
@@ -63,10 +92,10 @@ class PuppeteerControlServer {
     }
 
     async connect(connectionId, opts) {
-        console.log('Got connection command', connectionId)
+        console.log(connectionId, '\nGot connection command')
         const connStore = this.db.block('connections')
+
         const wsEndpoint = await connStore.acquireLock(async () => {
-            // console.log('Acquired lock for connect')
             const result = await connStore.get({
                 connections: [],
                 wsEndpoint: ''
@@ -78,36 +107,37 @@ class PuppeteerControlServer {
             })
 
             // If browser already running, just return its endpoint
+            console.log('Checking if browser running at ws endpoint', result.wsEndpoint)
             const pupInstance = await this._browserRunning(result.wsEndpoint)
             if (pupInstance) {
-                console.log('Browser already running', connectionId)
-                await connStore.set({ connections })
+                console.log(connectionId, 'Browser already running')
+                await connStore.update({
+                    connections: { $set: connections },
+                    killAt: { $set: -1 }
+                })
                 return result.wsEndpoint
             }
 
             // Otherwise start new browser process
-            console.log('Starting browser', connectionId)
+            console.log(connectionId, 'Starting browser')
             const wsEndpoint = await this._startBrowser(opts)
-            await connStore.set({ connections, wsEndpoint })
+            await connStore.update({ 
+                connections: { $set: connections },
+                wsEndpoint: { $set: wsEndpoint },
+                killAt: { $set: -1 }
+            })
             return wsEndpoint
         })
-
-        // Removing the kill timeout. Closing the browser is now the
-        // responsibility of this connection.
-        if (this.killTimer) {
-            console.log('Removing browser kill timer')
-            clearTimeout(this.killTimer)
-        }
 
         this.browserEndpoint = wsEndpoint
         return wsEndpoint
     }
 
     async disconnect(connectionId, opts) {
-        console.log('\n\n\nGot disconnection command', connectionId)
+        console.log(connectionId, 'Got disconnection command')
         const connStore = this.db.block('connections')
+
         await connStore.acquireLock(async () => {
-            // console.log('Acquired lock for disconnect')
             const result = await connStore.get({
                 connections: [],
                 wsEndpoint: ''
@@ -115,8 +145,6 @@ class PuppeteerControlServer {
 
             // If no connection with given ID found, nothing to be done.
             const connections = [...result.connections]
-            console.log('connections', connectionId, connections)
-
             if (!connections.some(c => c.id === connectionId)) {
                 console.log(`No connection with id ${connectionId} found. Aborting.`)
                 return
@@ -125,15 +153,11 @@ class PuppeteerControlServer {
             // If other connections are left after removing the current on,
             // do nothing
             const newConnections = connections.filter(c => c.id !== connectionId)
-            console.log(newConnections)
             if (newConnections.length > 0) {
-                console.log('Connections still left:', connectionId, newConnections)
-                console.log('Setting these', connectionId)
-                // const res = await connStore.set({ connections: newConnections })
+                console.log(connectionId, 'Connections still left:', newConnections)
                 const res = await connStore.update({
                     connections: { $set: newConnections }
                 })
-                console.log('res', connectionId, res)
                 return 
             }
 
@@ -141,13 +165,9 @@ class PuppeteerControlServer {
             // (5 minutes, currently) of time            
             await connStore.update({
                 connections: { $set: newConnections },
-                wsEndpoint: { $set: '' }
+                killAt: { $set: Date.now() + KILL_TIMEOUT }
             })
-            this.killTimer = setTimeout(() => {
-                console.log('Actually killing browser process', connectionId)
-                this._stopBrowser()
-            }, KILL_TIMEOUT)
-            console.log(`Will kill browser process after ${KILL_TIMEOUT/1000} seconds`)
+            console.log(connectionId, `Will kill browser process after ${KILL_TIMEOUT/1000} seconds`)
             return
         })
     }
@@ -168,6 +188,7 @@ class PuppeteerControlServer {
                         })
                     })
                     .catch((e) => {
+                        console.log('error', e)
                         server.emit(socket, `maya::browser_start::${id}`, {
                             status: 'ERROR',
                             error: e
@@ -199,14 +220,6 @@ class PuppeteerControlServer {
                 })
                 setTimeout(() => process.exit(0), 2000)
             })
-
-            // this.ipc.server.on('maya.message', (data, socket) => {
-            //     console.log('data', data)
-            //     this.ipc.server.emit(socket, 'maya.message', {
-            //         id: 'maya',
-            //         message: data.message + ' bruh'
-            //     })
-            // })
         })
 
         this.ipc.server.start()
