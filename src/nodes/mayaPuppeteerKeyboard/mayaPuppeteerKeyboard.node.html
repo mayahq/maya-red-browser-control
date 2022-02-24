@@ -1,0 +1,303 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-keyboard", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            typeText: {
+                value: ""
+            },
+            payloadTypetypeText: {
+                value: "str"
+            },
+            typeDelay: {
+                value: "0"
+            },
+            payloadTypetypeDelay: {
+                value: "num"
+            },
+            typeXpath: {
+                value: "typeXpath"
+            },
+            payloadTypetypeXpath: {
+                value: "msg"
+            },
+            typeTimeout: {
+                value: "2000"
+            },
+            payloadTypetypeTimeout: {
+                value: "num"
+            },
+            typePageId: {
+                value: "pageIds[0]"
+            },
+            payloadTypetypePageId: {
+                value: "msg"
+            },
+            typeIndex: {
+                value: "0"
+            },
+            payloadTypetypeIndex: {
+                value: "num"
+            },
+            actionType: {
+                value: "type"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Keyboard Action"
+        },
+        paletteLabel: "Keyboard Action",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypetypeText === null) {
+                if (this.typeText === "") {
+                    this.payloadTypetypeText = "date"
+                } else {
+                    this.payloadTypetypeText = "str"
+                }
+            } else if (this.payloadTypetypeText === 'string' || this.payloadTypetypeText === 'none') {
+                this.payloadTypetypeText = "str"
+            }
+
+            $("#node-input-payloadTypetypeText").val(this.payloadTypetypeText)
+            $("#node-input-typeText").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypetypeText"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-typeText").typedInput("type", this.payloadTypetypeText)
+
+            if (this.payloadTypetypeDelay === null) {
+                if (this.typeDelay === "") {
+                    this.payloadTypetypeDelay = "date"
+                } else {
+                    this.payloadTypetypeDelay = "num"
+                }
+            } else if (this.payloadTypetypeDelay === 'string' || this.payloadTypetypeDelay === 'none') {
+                this.payloadTypetypeDelay = "num"
+            }
+
+            $("#node-input-payloadTypetypeDelay").val(this.payloadTypetypeDelay)
+            $("#node-input-typeDelay").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetypeDelay"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-typeDelay").typedInput("type", this.payloadTypetypeDelay)
+
+            if (this.payloadTypetypeXpath === null) {
+                if (this.typeXpath === "") {
+                    this.payloadTypetypeXpath = "date"
+                } else {
+                    this.payloadTypetypeXpath = "msg"
+                }
+            } else if (this.payloadTypetypeXpath === 'string' || this.payloadTypetypeXpath === 'none') {
+                this.payloadTypetypeXpath = "msg"
+            }
+
+            $("#node-input-payloadTypetypeXpath").val(this.payloadTypetypeXpath)
+            $("#node-input-typeXpath").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypetypeXpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-typeXpath").typedInput("type", this.payloadTypetypeXpath)
+
+            if (this.payloadTypetypeTimeout === null) {
+                if (this.typeTimeout === "") {
+                    this.payloadTypetypeTimeout = "date"
+                } else {
+                    this.payloadTypetypeTimeout = "num"
+                }
+            } else if (this.payloadTypetypeTimeout === 'string' || this.payloadTypetypeTimeout === 'none') {
+                this.payloadTypetypeTimeout = "num"
+            }
+
+            $("#node-input-payloadTypetypeTimeout").val(this.payloadTypetypeTimeout)
+            $("#node-input-typeTimeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetypeTimeout"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-typeTimeout").typedInput("type", this.payloadTypetypeTimeout)
+
+            if (this.payloadTypetypePageId === null) {
+                if (this.typePageId === "") {
+                    this.payloadTypetypePageId = "date"
+                } else {
+                    this.payloadTypetypePageId = "msg"
+                }
+            } else if (this.payloadTypetypePageId === 'string' || this.payloadTypetypePageId === 'none') {
+                this.payloadTypetypePageId = "msg"
+            }
+
+            $("#node-input-payloadTypetypePageId").val(this.payloadTypetypePageId)
+            $("#node-input-typePageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypetypePageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-typePageId").typedInput("type", this.payloadTypetypePageId)
+
+            if (this.payloadTypetypeIndex === null) {
+                if (this.typeIndex === "") {
+                    this.payloadTypetypeIndex = "date"
+                } else {
+                    this.payloadTypetypeIndex = "num"
+                }
+            } else if (this.payloadTypetypeIndex === 'string' || this.payloadTypetypeIndex === 'none') {
+                this.payloadTypetypeIndex = "num"
+            }
+
+            $("#node-input-payloadTypetypeIndex").val(this.payloadTypetypeIndex)
+            $("#node-input-typeIndex").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetypeIndex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-typeIndex").typedInput("type", this.payloadTypetypeIndex)
+
+
+            const actionTypeFieldSetNames = ["type"]
+            actionTypeFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-actionType").val(this.actionType)
+            $("#node-input-actionType").on("change", (e) => {
+                const newFieldSet = e.target.value
+                actionTypeFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-actionType").val(e.target.value)
+            })
+
+        },
+        oneditsave: function() {
+
+
+
+
+
+        },
+        oneditcancel: function() {
+
+
+
+
+
+        },
+        oneditdelete: function() {
+
+
+
+
+
+        },
+        oneditresize: function() {
+
+
+
+
+
+        },
+        onpaletteadd: function() {
+
+
+
+
+
+        },
+        onpaletteremove: function() {
+
+
+
+
+
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-keyboard">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-actionType">actionType</label>
+        <select type="text" id="node-input-actionType">
+        </select>
+    </div>
+    <div id="fieldset-type" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-typeText">Text</label>
+            <input type="text" id="node-input-typeText"></input>
+            <input type="hidden" id="node-input-payloadTypetypeText">
+        </div>
+        <div class="form-row">
+            <label for="node-input-typeDelay">Keypress delay</label>
+            <input type="text" id="node-input-typeDelay"></input>
+            <input type="hidden" id="node-input-payloadTypetypeDelay">
+        </div>
+        <div class="form-row">
+            <label for="node-input-typeXpath">Xpath</label>
+            <input type="text" id="node-input-typeXpath"></input>
+            <input type="hidden" id="node-input-payloadTypetypeXpath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-typeTimeout">Timeout</label>
+            <input type="text" id="node-input-typeTimeout"></input>
+            <input type="hidden" id="node-input-payloadTypetypeTimeout">
+        </div>
+        <div class="form-row">
+            <label for="node-input-typePageId">Page ID</label>
+            <input type="text" id="node-input-typePageId"></input>
+            <input type="hidden" id="node-input-payloadTypetypePageId">
+        </div>
+        <div class="form-row">
+            <label for="node-input-typeIndex">Element index</label>
+            <input type="text" id="node-input-typeIndex"></input>
+            <input type="hidden" id="node-input-payloadTypetypeIndex">
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-keyboard">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

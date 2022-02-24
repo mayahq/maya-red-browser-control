@@ -3,7 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
-const puppeteer = require('puppeteer-core')
+const getElementsWithXpath = require('../../utils/getElementsWithXpath')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
 const DATNum = ['num', 'msg', 'flow', 'global']
@@ -50,28 +50,6 @@ class MayaPuppeteerMouse extends Node {
         // Do something on initialization of node
     }
 
-
-    async getElementsWithXpath({ xpath, timeout, page }) {
-        let elements
-        try {
-            elements = await page.$x(xpath)
-        } catch (e) {
-            throw new Error('Invalid xpath')
-        }
-
-        if (elements.length === 0) {
-            try {
-                await page.waitForXpath(xpath, { timeout })
-                elements = await page.$x(xpath)
-            } catch (e) {
-                throw new Error('No elements found for xpath')
-            }
-        }
-
-        return elements
-        
-    }
-
     async handleClick({ msg, xpath, timeout, pageId, index }) {
         try {
             const context = this._node.context()
@@ -80,7 +58,7 @@ class MayaPuppeteerMouse extends Node {
             const page = pages[pageId]
             let elements
             try {
-                elements = await this.getElementsWithXpath({
+                elements = await getElementsWithXpath({
                     xpath, timeout, page
                 })
             } catch (e) {
@@ -114,7 +92,7 @@ class MayaPuppeteerMouse extends Node {
             const page = pages[pageId]
             let elements
             try {
-                elements = await this.getElementsWithXpath({
+                elements = await getElementsWithXpath({
                     xpath, timeout, page
                 })
             } catch (e) {
