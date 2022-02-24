@@ -89,7 +89,7 @@ class MayaPuppeteerMouse extends Node {
                 return msg
             }
     
-            if (elements.length - 1 > index) {
+            if (elements.length - 1 < index) {
                 msg.__error = new Error(`Index out of bounds. Only ${elements.length} elements found for given xpath`)
                 msg.__isError = true
                 return msg
@@ -106,6 +106,7 @@ class MayaPuppeteerMouse extends Node {
     }
 
     async handleHover({ msg, xpath, timeout, pageId, index }) {
+        console.log('Starting hover')
         try {
             const context = this._node.context()
             const pages = context.flow.get(`_pages::${msg._msgid}`)
@@ -122,13 +123,14 @@ class MayaPuppeteerMouse extends Node {
                 return msg
             }
     
-            if (elements.length - 1 > index) {
+            if (elements.length - 1 < index) {
                 msg.__error = new Error(`Index out of bounds. Only ${elements.length} elements found for given xpath`)
                 msg.__isError = true
                 return msg
             }
 
             await elements[index].hover()
+            return msg
         } catch (e) {
             console.log('Unexpected error in mouse node during hover:', e)
             msg.__error = e
