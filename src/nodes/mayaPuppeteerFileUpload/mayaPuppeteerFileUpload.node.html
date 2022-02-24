@@ -1,0 +1,210 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-file-upload", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            pageId: {
+                value: "pageIds[0]"
+            },
+            payloadTypepageId: {
+                value: "msg"
+            },
+            inputXpath: {
+                value: "//input"
+            },
+            payloadTypeinputXpath: {
+                value: "str"
+            },
+            index: {
+                value: "0"
+            },
+            payloadTypeindex: {
+                value: "num"
+            },
+            timeout: {
+                value: "2000"
+            },
+            payloadTypetimeout: {
+                value: "num"
+            },
+            pathToFile: {
+                value: "/path/to/file"
+            },
+            payloadTypepathToFile: {
+                value: "str"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Upload File"
+        },
+        paletteLabel: "Upload File",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "msg"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "msg"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
+            if (this.payloadTypeinputXpath === null) {
+                if (this.inputXpath === "") {
+                    this.payloadTypeinputXpath = "date"
+                } else {
+                    this.payloadTypeinputXpath = "str"
+                }
+            } else if (this.payloadTypeinputXpath === 'string' || this.payloadTypeinputXpath === 'none') {
+                this.payloadTypeinputXpath = "str"
+            }
+
+            $("#node-input-payloadTypeinputXpath").val(this.payloadTypeinputXpath)
+            $("#node-input-inputXpath").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypeinputXpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-inputXpath").typedInput("type", this.payloadTypeinputXpath)
+
+            if (this.payloadTypeindex === null) {
+                if (this.index === "") {
+                    this.payloadTypeindex = "date"
+                } else {
+                    this.payloadTypeindex = "num"
+                }
+            } else if (this.payloadTypeindex === 'string' || this.payloadTypeindex === 'none') {
+                this.payloadTypeindex = "num"
+            }
+
+            $("#node-input-payloadTypeindex").val(this.payloadTypeindex)
+            $("#node-input-index").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeindex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-index").typedInput("type", this.payloadTypeindex)
+
+            if (this.payloadTypetimeout === null) {
+                if (this.timeout === "") {
+                    this.payloadTypetimeout = "date"
+                } else {
+                    this.payloadTypetimeout = "num"
+                }
+            } else if (this.payloadTypetimeout === 'string' || this.payloadTypetimeout === 'none') {
+                this.payloadTypetimeout = "num"
+            }
+
+            $("#node-input-payloadTypetimeout").val(this.payloadTypetimeout)
+            $("#node-input-timeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetimeout"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-timeout").typedInput("type", this.payloadTypetimeout)
+
+            if (this.payloadTypepathToFile === null) {
+                if (this.pathToFile === "") {
+                    this.payloadTypepathToFile = "date"
+                } else {
+                    this.payloadTypepathToFile = "str"
+                }
+            } else if (this.payloadTypepathToFile === 'string' || this.payloadTypepathToFile === 'none') {
+                this.payloadTypepathToFile = "str"
+            }
+
+            $("#node-input-payloadTypepathToFile").val(this.payloadTypepathToFile)
+            $("#node-input-pathToFile").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepathToFile"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pathToFile").typedInput("type", this.payloadTypepathToFile)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-file-upload">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-inputXpath">Input xpath</label>
+        <input type="text" id="node-input-inputXpath"></input>
+        <input type="hidden" id="node-input-payloadTypeinputXpath">
+    </div>
+    <div class="form-row">
+        <label for="node-input-index">Index</label>
+        <input type="text" id="node-input-index"></input>
+        <input type="hidden" id="node-input-payloadTypeindex">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout">Timeout</label>
+        <input type="text" id="node-input-timeout"></input>
+        <input type="hidden" id="node-input-payloadTypetimeout">
+    </div>
+    <div class="form-row">
+        <label for="node-input-pathToFile">File path</label>
+        <input type="text" id="node-input-pathToFile"></input>
+        <input type="hidden" id="node-input-payloadTypepathToFile">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-file-upload">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

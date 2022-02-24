@@ -15,6 +15,7 @@ async function getElementsWithXpath({ xpath, timeout, page }) {
     try {
         elements = await page.$x(xpath)
     } catch (e) {
+        console.log('Error in evaluation:', e)
         throw new Error('Invalid xpath')
     }
 

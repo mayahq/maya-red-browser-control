@@ -22,7 +22,8 @@
       "maya-browser-control-disconnect": "src/nodes/mayaBrowserControlDisconnect/mayaBrowserControlDisconnect.node.js",
       "maya-open-page": "src/nodes/mayaOpenPage/mayaOpenPage.node.js",
       "maya-puppeteer-mouse": "src/nodes/mayaPuppeteerMouse/mayaPuppeteerMouse.node.js",
-      "maya-puppeteer-keyboard": "src/nodes/mayaPuppeteerKeyboard/mayaPuppeteerKeyboard.node.js"
+      "maya-puppeteer-keyboard": "src/nodes/mayaPuppeteerKeyboard/mayaPuppeteerKeyboard.node.js",
+      "maya-puppeteer-file-upload": "src/nodes/mayaPuppeteerFileUpload/mayaPuppeteerFileUpload.node.js"
     }
   },
   "mayaDetails": {
