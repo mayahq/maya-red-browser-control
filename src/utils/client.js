@@ -123,15 +123,13 @@ class LocalInstanceControl {
         return
     }
 
-    startBrowser({ headless }, timeout = BROWSER_START_STOP_TIMEOUT) {
+    startBrowser(opts, timeout = BROWSER_START_STOP_TIMEOUT) {
         return new Promise((resolve, reject) => {
             const id = (Math.random() * 100000000).toString()
             const browserStartMessage = {
                 id: id,
                 type: 'maya::browser_start',
-                payload: {
-                    headless
-                }
+                payload: opts // Provided to puppeteer.launch
             }
             this.ipc.of.mayaBrowserControl.emit('maya::browser_start', browserStartMessage)
             const tm = setTimeout(() => reject({ error: 'Timed out' }), timeout)

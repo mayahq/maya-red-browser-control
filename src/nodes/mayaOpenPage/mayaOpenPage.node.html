@@ -1,5 +1,5 @@
 <script type='text/javascript'>
-    RED.nodes.registerType("open-page", {
+    RED.nodes.registerType("maya-open-page", {
         category: "Maya Red Browser Control",
         color: "#8BBDD9",
         defaults: {
@@ -23,9 +23,9 @@
         outputs: 1,
         icon: "fa-file-code-o.png",
         label: function() {
-            return this.name || "open-page"
+            return this.name || "Open Page"
         },
-        paletteLabel: "open-page",
+        paletteLabel: "Open Page",
         exportable: true,
         oneditprepare: function() {
             if (this.payloadTypeurl === null) {
@@ -62,7 +62,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="open-page">
+<script type="text/html" data-template-name="maya-open-page">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
@@ -79,7 +79,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="open-page">
+<script type="text/html" data-help-name="maya-open-page">
     <h2>Description</h2>
     <p>Query opens tabs based on criteria like URL, muted status</p>
 

@@ -52,7 +52,8 @@ class Connect extends Node {
             await browserClient.init()
             try {
                 const { connectionId, details } = await browserClient.startBrowser({
-                    headless: false
+                    headless: false,
+                    defaultViewport: null
                 })
                 browser = await puppeteer.connect({
                     browserWSEndpoint: details.wsEndpoint
@@ -72,6 +73,7 @@ class Connect extends Node {
         }
 
         context.flow.set(`_browser::${msg._msgid}`, browser)
+        context.flow.set(`_pages::${msg._msgid}`, [])
         return msg
     }
 }

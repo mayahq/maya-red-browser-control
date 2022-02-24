@@ -1,4 +1,4 @@
-const NodeClass = require('./click.schema')
+const NodeClass = require('./mayaPuppeteerMouse.schema')
 const {
     nodefn
 } = require('@mayahq/module-sdk')

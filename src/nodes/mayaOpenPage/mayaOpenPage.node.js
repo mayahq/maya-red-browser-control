@@ -1,4 +1,4 @@
-const NodeClass = require('./openPage.schema')
+const NodeClass = require('./mayaOpenPage.schema')
 const {
     nodefn
 } = require('@mayahq/module-sdk')

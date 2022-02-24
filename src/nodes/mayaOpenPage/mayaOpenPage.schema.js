@@ -13,7 +13,7 @@ const waitOptions = [
     'domcontentloaded'
 ]
 
-class OpenPage extends Node {
+class MayaOpenPage extends Node {
     constructor(node, RED, opts) {
         super(node, RED, {
             ...opts,
@@ -22,8 +22,8 @@ class OpenPage extends Node {
     }
 
     static schema = new Schema({
-        name: 'open-page',
-        label: 'open-page',
+        name: 'maya-open-page',
+        label: 'Open Page',
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {
@@ -38,21 +38,31 @@ class OpenPage extends Node {
     }
 
     async onMessage(msg, vals) {
-        if (msg._browser) {
-            throw new Error('No connect node at flow beginning')
-        }
+        const context = this._node.context()
 
         /**
          * @type {puppeteer.Browser}
          */
-        const browser = msg._browser
+        const browser = context.flow.get(`_browser::${msg._msgid}`)
+        
+        if (!browser) {
+            this.setStatus('ERROR', 'No connect node at flow beginning')
+            throw new Error('No connect node at flow beginning')
+        }
+        
         const page = await browser.newPage()
-        await browser.goto(vals.url, {
+        await page.goto(vals.url, {
             waitUntil: vals.waitUntil
         })
-        msg.pages = [page]
+        
+        const pages = context.flow.get(`_pages::${msg._msgid}`)
+        const pageId = pages.length
+        const newPages = [...pages].concat(page)
+        context.flow.set(`_pages::${msg._msgid}`, newPages)
+
+        msg.pageIds = [pageId]
         return msg
     }
 }
 
-module.exports = OpenPage
+module.exports = MayaOpenPage

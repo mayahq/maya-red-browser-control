@@ -1,0 +1,414 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-mouse", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            clickXpath: {
+                value: "clickXpath"
+            },
+            payloadTypeclickXpath: {
+                value: "msg"
+            },
+            clickTimeout: {
+                value: "2000"
+            },
+            payloadTypeclickTimeout: {
+                value: "num"
+            },
+            clickPageId: {
+                value: "0"
+            },
+            payloadTypeclickPageId: {
+                value: "num"
+            },
+            clickIndex: {
+                value: "0"
+            },
+            payloadTypeclickIndex: {
+                value: "num"
+            },
+            hoverXpath: {
+                value: "hoverXpath"
+            },
+            payloadTypehoverXpath: {
+                value: "msg"
+            },
+            hoverTimeout: {
+                value: "2000"
+            },
+            payloadTypehoverTimeout: {
+                value: "num"
+            },
+            hoverPageId: {
+                value: "0"
+            },
+            payloadTypehoverPageId: {
+                value: "num"
+            },
+            hoverIndex: {
+                value: "0"
+            },
+            payloadTypehoverIndex: {
+                value: "num"
+            },
+            scrollXpath: {
+                value: "scrollXpath"
+            },
+            payloadTypescrollXpath: {
+                value: "msg"
+            },
+            actionType: {
+                value: "click"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Mouse Action"
+        },
+        paletteLabel: "Mouse Action",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypeclickXpath === null) {
+                if (this.clickXpath === "") {
+                    this.payloadTypeclickXpath = "date"
+                } else {
+                    this.payloadTypeclickXpath = "msg"
+                }
+            } else if (this.payloadTypeclickXpath === 'string' || this.payloadTypeclickXpath === 'none') {
+                this.payloadTypeclickXpath = "msg"
+            }
+
+            $("#node-input-payloadTypeclickXpath").val(this.payloadTypeclickXpath)
+            $("#node-input-clickXpath").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypeclickXpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-clickXpath").typedInput("type", this.payloadTypeclickXpath)
+
+            if (this.payloadTypeclickTimeout === null) {
+                if (this.clickTimeout === "") {
+                    this.payloadTypeclickTimeout = "date"
+                } else {
+                    this.payloadTypeclickTimeout = "num"
+                }
+            } else if (this.payloadTypeclickTimeout === 'string' || this.payloadTypeclickTimeout === 'none') {
+                this.payloadTypeclickTimeout = "num"
+            }
+
+            $("#node-input-payloadTypeclickTimeout").val(this.payloadTypeclickTimeout)
+            $("#node-input-clickTimeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeclickTimeout"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-clickTimeout").typedInput("type", this.payloadTypeclickTimeout)
+
+            if (this.payloadTypeclickPageId === null) {
+                if (this.clickPageId === "") {
+                    this.payloadTypeclickPageId = "date"
+                } else {
+                    this.payloadTypeclickPageId = "num"
+                }
+            } else if (this.payloadTypeclickPageId === 'string' || this.payloadTypeclickPageId === 'none') {
+                this.payloadTypeclickPageId = "num"
+            }
+
+            $("#node-input-payloadTypeclickPageId").val(this.payloadTypeclickPageId)
+            $("#node-input-clickPageId").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeclickPageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-clickPageId").typedInput("type", this.payloadTypeclickPageId)
+
+            if (this.payloadTypeclickIndex === null) {
+                if (this.clickIndex === "") {
+                    this.payloadTypeclickIndex = "date"
+                } else {
+                    this.payloadTypeclickIndex = "num"
+                }
+            } else if (this.payloadTypeclickIndex === 'string' || this.payloadTypeclickIndex === 'none') {
+                this.payloadTypeclickIndex = "num"
+            }
+
+            $("#node-input-payloadTypeclickIndex").val(this.payloadTypeclickIndex)
+            $("#node-input-clickIndex").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeclickIndex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-clickIndex").typedInput("type", this.payloadTypeclickIndex)
+
+            if (this.payloadTypehoverXpath === null) {
+                if (this.hoverXpath === "") {
+                    this.payloadTypehoverXpath = "date"
+                } else {
+                    this.payloadTypehoverXpath = "msg"
+                }
+            } else if (this.payloadTypehoverXpath === 'string' || this.payloadTypehoverXpath === 'none') {
+                this.payloadTypehoverXpath = "msg"
+            }
+
+            $("#node-input-payloadTypehoverXpath").val(this.payloadTypehoverXpath)
+            $("#node-input-hoverXpath").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypehoverXpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-hoverXpath").typedInput("type", this.payloadTypehoverXpath)
+
+            if (this.payloadTypehoverTimeout === null) {
+                if (this.hoverTimeout === "") {
+                    this.payloadTypehoverTimeout = "date"
+                } else {
+                    this.payloadTypehoverTimeout = "num"
+                }
+            } else if (this.payloadTypehoverTimeout === 'string' || this.payloadTypehoverTimeout === 'none') {
+                this.payloadTypehoverTimeout = "num"
+            }
+
+            $("#node-input-payloadTypehoverTimeout").val(this.payloadTypehoverTimeout)
+            $("#node-input-hoverTimeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypehoverTimeout"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-hoverTimeout").typedInput("type", this.payloadTypehoverTimeout)
+
+            if (this.payloadTypehoverPageId === null) {
+                if (this.hoverPageId === "") {
+                    this.payloadTypehoverPageId = "date"
+                } else {
+                    this.payloadTypehoverPageId = "num"
+                }
+            } else if (this.payloadTypehoverPageId === 'string' || this.payloadTypehoverPageId === 'none') {
+                this.payloadTypehoverPageId = "num"
+            }
+
+            $("#node-input-payloadTypehoverPageId").val(this.payloadTypehoverPageId)
+            $("#node-input-hoverPageId").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypehoverPageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-hoverPageId").typedInput("type", this.payloadTypehoverPageId)
+
+            if (this.payloadTypehoverIndex === null) {
+                if (this.hoverIndex === "") {
+                    this.payloadTypehoverIndex = "date"
+                } else {
+                    this.payloadTypehoverIndex = "num"
+                }
+            } else if (this.payloadTypehoverIndex === 'string' || this.payloadTypehoverIndex === 'none') {
+                this.payloadTypehoverIndex = "num"
+            }
+
+            $("#node-input-payloadTypehoverIndex").val(this.payloadTypehoverIndex)
+            $("#node-input-hoverIndex").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypehoverIndex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-hoverIndex").typedInput("type", this.payloadTypehoverIndex)
+
+            if (this.payloadTypescrollXpath === null) {
+                if (this.scrollXpath === "") {
+                    this.payloadTypescrollXpath = "date"
+                } else {
+                    this.payloadTypescrollXpath = "msg"
+                }
+            } else if (this.payloadTypescrollXpath === 'string' || this.payloadTypescrollXpath === 'none') {
+                this.payloadTypescrollXpath = "msg"
+            }
+
+            $("#node-input-payloadTypescrollXpath").val(this.payloadTypescrollXpath)
+            $("#node-input-scrollXpath").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypescrollXpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-scrollXpath").typedInput("type", this.payloadTypescrollXpath)
+
+
+            const actionTypeFieldSetNames = ["click", "hover", "scroll"]
+            actionTypeFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-actionType").val(this.actionType)
+            $("#node-input-actionType").on("change", (e) => {
+                const newFieldSet = e.target.value
+                actionTypeFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-actionType").val(e.target.value)
+            })
+
+        },
+        oneditsave: function() {
+
+
+
+
+
+
+
+
+        },
+        oneditcancel: function() {
+
+
+
+
+
+
+
+
+        },
+        oneditdelete: function() {
+
+
+
+
+
+
+
+
+        },
+        oneditresize: function() {
+
+
+
+
+
+
+
+
+        },
+        onpaletteadd: function() {
+
+
+
+
+
+
+
+
+        },
+        onpaletteremove: function() {
+
+
+
+
+
+
+
+
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-mouse">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-actionType">actionType</label>
+        <select type="text" id="node-input-actionType">
+        </select>
+    </div>
+    <div id="fieldset-click" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-clickXpath">Xpath</label>
+            <input type="text" id="node-input-clickXpath"></input>
+            <input type="hidden" id="node-input-payloadTypeclickXpath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-clickTimeout">Timeout</label>
+            <input type="text" id="node-input-clickTimeout"></input>
+            <input type="hidden" id="node-input-payloadTypeclickTimeout">
+        </div>
+        <div class="form-row">
+            <label for="node-input-clickPageId">Page ID</label>
+            <input type="text" id="node-input-clickPageId"></input>
+            <input type="hidden" id="node-input-payloadTypeclickPageId">
+        </div>
+        <div class="form-row">
+            <label for="node-input-clickIndex">Element index</label>
+            <input type="text" id="node-input-clickIndex"></input>
+            <input type="hidden" id="node-input-payloadTypeclickIndex">
+        </div>
+    </div>
+
+    <div id="fieldset-hover" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-hoverXpath">Xpath</label>
+            <input type="text" id="node-input-hoverXpath"></input>
+            <input type="hidden" id="node-input-payloadTypehoverXpath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-hoverTimeout">Timeout</label>
+            <input type="text" id="node-input-hoverTimeout"></input>
+            <input type="hidden" id="node-input-payloadTypehoverTimeout">
+        </div>
+        <div class="form-row">
+            <label for="node-input-hoverPageId">Page ID</label>
+            <input type="text" id="node-input-hoverPageId"></input>
+            <input type="hidden" id="node-input-payloadTypehoverPageId">
+        </div>
+        <div class="form-row">
+            <label for="node-input-hoverIndex">Element index</label>
+            <input type="text" id="node-input-hoverIndex"></input>
+            <input type="hidden" id="node-input-payloadTypehoverIndex">
+        </div>
+    </div>
+
+    <div id="fieldset-scroll" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-scrollXpath">Xpath</label>
+            <input type="text" id="node-input-scrollXpath"></input>
+            <input type="hidden" id="node-input-payloadTypescrollXpath">
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-mouse">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

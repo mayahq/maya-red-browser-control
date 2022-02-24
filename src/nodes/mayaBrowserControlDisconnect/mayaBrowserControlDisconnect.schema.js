@@ -54,7 +54,13 @@ class MayaBrowserControlDisconnect extends Node {
         await browserClient.disconnectFromController()
 
         // Removing browser object from flow context
-        context.flow.set(`_browser::${msg._msgid}`, undefined)
+        context.flow.set([
+            `_browser::${msg._msgid}`, 
+            `_pages::${msg._msgid}`
+        ], [
+            undefined, 
+            undefined
+        ])
         return msg
     }
 }
