@@ -17,15 +17,11 @@ class MayaBrowserControlDisconnect extends Node {
         label: 'disconnect',
         category: 'Maya Red Browser Control',
         isConfig: false,
-        fields: {
-            // Whatever custom fields the node needs.
-        },
+        fields: {},
 
     })
 
-    onInit() {
-        // Do something on initialization of node
-    }
+    onInit() {}
 
     async onMessage(msg, vals) {
         const connectionId = msg._connectionId
@@ -37,6 +33,13 @@ class MayaBrowserControlDisconnect extends Node {
             return msg
         }
 
+        // Disconnecting the browser object from debug websocket of
+        // the actual chromium process
+        const context = this._node.context()
+        const browser = context.flow.get(`_browser::${msg._msgid}`)
+        await browser.disconnect()
+
+        // Telling the browser manager that we're done now
         const browserClient = new LocalInstanceControl()
         await browserClient.init()
         try {
@@ -49,6 +52,9 @@ class MayaBrowserControlDisconnect extends Node {
             msg.__isError = true
         }
         await browserClient.disconnectFromController()
+
+        // Removing browser object from flow context
+        context.flow.set(`_browser::${msg._msgid}`, undefined)
         return msg
     }
 }

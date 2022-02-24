@@ -41,8 +41,10 @@ class Connect extends Node {
     }
 
     async onMessage(msg, vals) {
-        console.log('Recieved a message', msg)
         const connectionType = vals.connectionType.selected
+
+        const context = this._node.context()
+        console.log(context, context.flow)
 
         let browser
         if (connectionType === 'new') {
@@ -52,19 +54,16 @@ class Connect extends Node {
                 const { connectionId, details } = await browserClient.startBrowser({
                     headless: false
                 })
-                console.log('here 1', connectionId, details)
                 browser = await puppeteer.connect({
                     browserWSEndpoint: details.wsEndpoint
                 })
-                console.log('here 2')
                 msg._connectionId = connectionId
             } catch (e) {
                 msg.__error = e
                 msg.__isError = true
             }
-            console.log('here 3')
+
             await browserClient.disconnectFromController()
-            console.log('here 4')
         } else {
             const wsEndpoint = vals.connectionType.childValues.link
             browser = await puppeteer.connect({
@@ -72,9 +71,7 @@ class Connect extends Node {
             })
         }
 
-        msg._browser = browser
-        browser.toString = () => '[Puppeteer Browser Instance]'
-        console.log('connect', msg)
+        context.flow.set(`_browser::${msg._msgid}`, browser)
         return msg
     }
 }
