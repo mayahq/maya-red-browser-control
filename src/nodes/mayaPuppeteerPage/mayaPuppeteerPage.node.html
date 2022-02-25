@@ -24,6 +24,21 @@
             waitUntil: {
                 value: "networkidle2"
             },
+            vwidth: {
+                value: "1600"
+            },
+            payloadTypevwidth: {
+                value: "num"
+            },
+            vheight: {
+                value: "900"
+            },
+            payloadTypevheight: {
+                value: "num"
+            },
+            viewport: {
+                value: "default"
+            },
             pdfDestinationPath: {
                 value: "/absolute/path/to/output/file"
             },
@@ -177,6 +192,60 @@
                 $("#node-input-waitUntil").append($("<option></option>").attr("value", val).text(val))
             })
             $("#node-input-waitUntil").val(this.waitUntil)
+
+            if (this.payloadTypevwidth === null) {
+                if (this.vwidth === "") {
+                    this.payloadTypevwidth = "date"
+                } else {
+                    this.payloadTypevwidth = "num"
+                }
+            } else if (this.payloadTypevwidth === 'string' || this.payloadTypevwidth === 'none') {
+                this.payloadTypevwidth = "num"
+            }
+
+            $("#node-input-payloadTypevwidth").val(this.payloadTypevwidth)
+            $("#node-input-vwidth").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypevwidth"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-vwidth").typedInput("type", this.payloadTypevwidth)
+
+            if (this.payloadTypevheight === null) {
+                if (this.vheight === "") {
+                    this.payloadTypevheight = "date"
+                } else {
+                    this.payloadTypevheight = "num"
+                }
+            } else if (this.payloadTypevheight === 'string' || this.payloadTypevheight === 'none') {
+                this.payloadTypevheight = "num"
+            }
+
+            $("#node-input-payloadTypevheight").val(this.payloadTypevheight)
+            $("#node-input-vheight").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypevheight"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-vheight").typedInput("type", this.payloadTypevheight)
+
+
+            const viewportFieldSetNames = ["default", "custom"]
+            viewportFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-viewport").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-viewport").val(this.viewport)
+            $("#node-input-viewport").on("change", (e) => {
+                const newFieldSet = e.target.value
+                viewportFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-viewport").val(e.target.value)
+            })
 
             if (this.payloadTypepdfDestinationPath === null) {
                 if (this.pdfDestinationPath === "") {
@@ -485,7 +554,7 @@
             })
 
 
-            const actionTypeFieldSetNames = ["navigate", "generatePDF", "screenshot"]
+            const actionTypeFieldSetNames = ["navigate", "generatePDF", "screenshot", "setViewport"]
             actionTypeFieldSetNames.forEach((fieldSetName) => {
                 $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
             })
@@ -518,8 +587,10 @@
 
 
 
+
         },
         oneditcancel: function() {
+
 
 
 
@@ -550,8 +621,10 @@
 
 
 
+
         },
         oneditresize: function() {
+
 
 
 
@@ -582,8 +655,10 @@
 
 
 
+
         },
         onpaletteremove: function() {
+
 
 
 
@@ -627,6 +702,27 @@
             <label for="node-input-waitUntil">waitUntil</label>
             <select type="text" id="node-input-waitUntil">
             </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-viewport">viewport</label>
+            <select type="text" id="node-input-viewport">
+            </select>
+        </div>
+        <div id="fieldset-default" style="padding-left: 10px;">
+
+        </div>
+
+        <div id="fieldset-custom" style="padding-left: 10px;">
+            <div class="form-row">
+                <label for="node-input-vwidth">Width</label>
+                <input type="text" id="node-input-vwidth"></input>
+                <input type="hidden" id="node-input-payloadTypevwidth">
+            </div>
+            <div class="form-row">
+                <label for="node-input-vheight">Height</label>
+                <input type="text" id="node-input-vheight"></input>
+                <input type="hidden" id="node-input-payloadTypevheight">
+            </div>
         </div>
     </div>
 
@@ -745,6 +841,10 @@
                 <input type="hidden" id="node-input-payloadTypessHeight">
             </div>
         </div>
+    </div>
+
+    <div id="fieldset-setViewport" style="padding-left: 10px;">
+
     </div>
 </script>
 

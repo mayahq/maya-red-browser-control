@@ -38,7 +38,16 @@ class MayaPuppeteerPage extends Node {
 
                     navigate: {
                         url: new fields.Typed({ type: 'str', allowedTypes: DATStr, displayName: 'URL', defaultVal: 'https://www.example.com' }),
-                        waitUntil: new fields.Select({ options: waitOptions, defaultVal: 'networkidle2' })
+                        waitUntil: new fields.Select({ options: waitOptions, defaultVal: 'networkidle2' }),
+                        viewport: new fields.SelectFieldSet({
+                            fieldSets: {
+                                default: {},
+                                custom: {
+                                    vwidth: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Width', defaultVal: 1600 }),
+                                    vheight: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Height', defaultVal: 900 }),
+                                }
+                            }
+                        })
                     },
 
                     generatePDF: {
@@ -96,6 +105,10 @@ class MayaPuppeteerPage extends Node {
                                 }
                             }
                         })
+                    },
+
+                    setViewport: {
+
                     }
                 }
             })
@@ -125,8 +138,14 @@ class MayaPuppeteerPage extends Node {
 
         switch (vals.actionType.selected) {
             case 'navigate': {
-                const {  url, waitUntil } = vals.actionType.childValues
+                const {  url, waitUntil, viewport } = vals.actionType.childValues
                 this.setStatus('PROGRESS', `Navigating to ${url}`)
+                if (viewport.selected === 'custom') {
+                    await page.setViewport({
+                        width: viewport.childValues.vwidth,
+                        height: viewport.childValues.vheight
+                    })
+                }
                 await page.goto(url, { waitUntil })
                 this.setStatus('SUCCESS', `Navigated to ${url}`)
                 return msg
