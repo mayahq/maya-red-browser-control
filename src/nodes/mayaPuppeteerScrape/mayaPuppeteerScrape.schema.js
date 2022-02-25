@@ -19,7 +19,7 @@ class MayaPuppeteerScrape extends Node {
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {
-            pageId: new fields.Typed({ type: 'msg', allowedTypes: ['msg', 'global', 'flow', 'str'], defaultVal:'pageIds[0].id', displayName: 'Page ID'}),
+            pageId: new fields.Typed({ type: 'msg', allowedTypes: ['msg', 'global', 'flow', 'str'], defaultVal:'pageIds[0]', displayName: 'Page ID'}),
             query: new fields.Typed({ type: 'json', allowedTypes: ['msg', 'flow', 'global'], displayName: 'Query' }),
             timeout: new fields.Typed({ type: 'num', allowedTypes: ['msg', 'global', 'flow'], defaultVal: 2000, displayName: 'Timeout' }),
         },

@@ -202,50 +202,46 @@ async function evaluateQuery(page, query, timeout) {
     return await resolveXpathQuery(page, query, timeout)
 }
 
+module.exports = evaluateQuery
 
 
 
 
-const query = {
-    videos: [{
-        _xpath: "//*[@id='dismissible' and contains(@class, 'compact')]",
-        details: {
-            title: './/h3//span',
-            channel: `.//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']//ytd-channel-name//yt-formatted-string`
-        }
-    }]
-}
-
-//*[@id='dismissible' and contains(@class, 'compact')]//.//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']//ytd-channel-name//yt-formatted-string
-
-//*[@id="dismissible" and contains(@class, 'compact')]//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']
-
-async function test() {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    })
-
-    const page = await browser.newPage()
-    await page.setViewport({
-        width: 1600,
-        height: 900
-    })
-    await page.goto('https://www.youtube.com/watch?v=tvTRZJ-4EyI', {
-        waitUntil: 'networkidle2'
-    })
-
-    const result = await evaluateQuery(page, query, 2000)
-    console.log(JSON.stringify(result, null, 2))
-    console.log(result)
-    await browser.close()
-}
+// const query = {
+//     videos: [{
+//         _xpath: "//*[@id='dismissible' and contains(@class, 'compact')]",
+//         details: {
+//             title: './/h3//span',
+//             channel: `.//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']//ytd-channel-name//yt-formatted-string`
+//         }
+//     }]
+// }
 
 
-test().catch(e => console.log(e))
+// async function test() {
+//     const browser = await puppeteer.launch({
+//         headless: false,
+//         defaultViewport: null,
+//         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+//     })
+
+//     const page = await browser.newPage()
+//     await page.setViewport({
+//         width: 1600,
+//         height: 900
+//     })
+//     await page.goto('https://www.youtube.com/watch?v=tvTRZJ-4EyI', {
+//         waitUntil: 'networkidle2'
+//     })
+
+//     const result = await evaluateQuery(page, query, 2000)
+//     console.log(JSON.stringify(result, null, 2))
+//     console.log(result)
+//     await browser.close()
+// }
 
 
+// test().catch(e => console.log(e))
 
 
 
@@ -255,7 +251,8 @@ test().catch(e => console.log(e))
 
 
 
-// module.exports = evaluateQuery
+
+
 
 // const query = {
 //     __singleton: false,
