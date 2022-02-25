@@ -1,0 +1,239 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-execute-function", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            pageId: {
+                value: "0"
+            },
+            payloadTypepageId: {
+                value: "num"
+            },
+            xpath: {
+                value: "clickXpath"
+            },
+            payloadTypexpath: {
+                value: "msg"
+            },
+            timeout: {
+                value: "2000"
+            },
+            payloadTypetimeout: {
+                value: "num"
+            },
+            index: {
+                value: "0"
+            },
+            payloadTypeindex: {
+                value: "num"
+            },
+            funcName: {
+                value: ""
+            },
+            payloadTypefuncName: {
+                value: "str"
+            },
+            args: {
+                value: ""
+            },
+            payloadTypeargs: {
+                value: "json"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Execute Function"
+        },
+        paletteLabel: "Execute Function",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "num"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "num"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
+            if (this.payloadTypexpath === null) {
+                if (this.xpath === "") {
+                    this.payloadTypexpath = "date"
+                } else {
+                    this.payloadTypexpath = "msg"
+                }
+            } else if (this.payloadTypexpath === 'string' || this.payloadTypexpath === 'none') {
+                this.payloadTypexpath = "msg"
+            }
+
+            $("#node-input-payloadTypexpath").val(this.payloadTypexpath)
+            $("#node-input-xpath").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypexpath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-xpath").typedInput("type", this.payloadTypexpath)
+
+            if (this.payloadTypetimeout === null) {
+                if (this.timeout === "") {
+                    this.payloadTypetimeout = "date"
+                } else {
+                    this.payloadTypetimeout = "num"
+                }
+            } else if (this.payloadTypetimeout === 'string' || this.payloadTypetimeout === 'none') {
+                this.payloadTypetimeout = "num"
+            }
+
+            $("#node-input-payloadTypetimeout").val(this.payloadTypetimeout)
+            $("#node-input-timeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetimeout"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-timeout").typedInput("type", this.payloadTypetimeout)
+
+            if (this.payloadTypeindex === null) {
+                if (this.index === "") {
+                    this.payloadTypeindex = "date"
+                } else {
+                    this.payloadTypeindex = "num"
+                }
+            } else if (this.payloadTypeindex === 'string' || this.payloadTypeindex === 'none') {
+                this.payloadTypeindex = "num"
+            }
+
+            $("#node-input-payloadTypeindex").val(this.payloadTypeindex)
+            $("#node-input-index").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeindex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-index").typedInput("type", this.payloadTypeindex)
+
+            if (this.payloadTypefuncName === null) {
+                if (this.funcName === "") {
+                    this.payloadTypefuncName = "date"
+                } else {
+                    this.payloadTypefuncName = "str"
+                }
+            } else if (this.payloadTypefuncName === 'string' || this.payloadTypefuncName === 'none') {
+                this.payloadTypefuncName = "str"
+            }
+
+            $("#node-input-payloadTypefuncName").val(this.payloadTypefuncName)
+            $("#node-input-funcName").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypefuncName"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-funcName").typedInput("type", this.payloadTypefuncName)
+
+            if (this.payloadTypeargs === null) {
+                if (this.args === "") {
+                    this.payloadTypeargs = "date"
+                } else {
+                    this.payloadTypeargs = "json"
+                }
+            } else if (this.payloadTypeargs === 'string' || this.payloadTypeargs === 'none') {
+                this.payloadTypeargs = "json"
+            }
+
+            $("#node-input-payloadTypeargs").val(this.payloadTypeargs)
+            $("#node-input-args").typedInput({
+                default: "json",
+                typeField: $("#node-input-payloadTypeargs"),
+                types: ["json", "msg", "flow", "global"]
+            })
+            $("#node-input-args").typedInput("type", this.payloadTypeargs)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-execute-function">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-xpath">Xpath</label>
+        <input type="text" id="node-input-xpath"></input>
+        <input type="hidden" id="node-input-payloadTypexpath">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout">Timeout</label>
+        <input type="text" id="node-input-timeout"></input>
+        <input type="hidden" id="node-input-payloadTypetimeout">
+    </div>
+    <div class="form-row">
+        <label for="node-input-index">Element index</label>
+        <input type="text" id="node-input-index"></input>
+        <input type="hidden" id="node-input-payloadTypeindex">
+    </div>
+    <div class="form-row">
+        <label for="node-input-funcName">Function name</label>
+        <input type="text" id="node-input-funcName"></input>
+        <input type="hidden" id="node-input-payloadTypefuncName">
+    </div>
+    <div class="form-row">
+        <label for="node-input-args">Arguments</label>
+        <input type="text" id="node-input-args"></input>
+        <input type="hidden" id="node-input-payloadTypeargs">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-execute-function">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>
