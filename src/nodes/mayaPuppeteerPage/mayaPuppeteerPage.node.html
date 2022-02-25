@@ -1,0 +1,165 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-page", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            pageId: {
+                value: "pageIds[0]"
+            },
+            payloadTypepageId: {
+                value: "msg"
+            },
+            url: {
+                value: "https://www.example.com"
+            },
+            payloadTypeurl: {
+                value: "str"
+            },
+            waitUntil: {
+                value: "networkidle2"
+            },
+            actionType: {
+                value: "navigate"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Page Action"
+        },
+        paletteLabel: "Page Action",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "msg"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "msg"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
+            if (this.payloadTypeurl === null) {
+                if (this.url === "") {
+                    this.payloadTypeurl = "date"
+                } else {
+                    this.payloadTypeurl = "str"
+                }
+            } else if (this.payloadTypeurl === 'string' || this.payloadTypeurl === 'none') {
+                this.payloadTypeurl = "str"
+            }
+
+            $("#node-input-payloadTypeurl").val(this.payloadTypeurl)
+            $("#node-input-url").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypeurl"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-url").typedInput("type", this.payloadTypeurl)
+
+            const waitUntilselectFieldValues = ["networkidle0", "networkidle2", "load", "domcontentloaded"]
+            waitUntilselectFieldValues.forEach((val) => {
+                $("#node-input-waitUntil").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-waitUntil").val(this.waitUntil)
+
+
+            const actionTypeFieldSetNames = ["navigate"]
+            actionTypeFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-actionType").val(this.actionType)
+            $("#node-input-actionType").on("change", (e) => {
+                const newFieldSet = e.target.value
+                actionTypeFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-actionType").val(e.target.value)
+            })
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-page">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-actionType">actionType</label>
+        <select type="text" id="node-input-actionType">
+        </select>
+    </div>
+    <div id="fieldset-navigate" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-pageId">Page ID</label>
+            <input type="text" id="node-input-pageId"></input>
+            <input type="hidden" id="node-input-payloadTypepageId">
+        </div>
+        <div class="form-row">
+            <label for="node-input-url">URL</label>
+            <input type="text" id="node-input-url"></input>
+            <input type="hidden" id="node-input-payloadTypeurl">
+        </div>
+        <div class="form-row">
+            <label for="node-input-waitUntil">waitUntil</label>
+            <select type="text" id="node-input-waitUntil">
+            </select>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-page">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>
