@@ -34,7 +34,6 @@ class MayaPuppeteerScrape extends Node {
         const context = this._node.context()
         const { pageId, query, timeout } = vals
         const pages = context.flow.get(`_pages::${msg._msgid}`)
-        
         const page = pages[pageId]
 
         const result = await evaluateQuery(page, query, timeout)

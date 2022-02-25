@@ -9,6 +9,12 @@
             isProfileConfigNode: {
                 value: false
             },
+            pageId: {
+                value: "pageIds[0]"
+            },
+            payloadTypepageId: {
+                value: "msg"
+            },
             typeText: {
                 value: ""
             },
@@ -33,17 +39,35 @@
             payloadTypetypeTimeout: {
                 value: "num"
             },
-            typePageId: {
-                value: "pageIds[0]"
-            },
-            payloadTypetypePageId: {
-                value: "msg"
-            },
             typeIndex: {
                 value: "0"
             },
             payloadTypetypeIndex: {
                 value: "num"
+            },
+            kpKey: {
+                value: ""
+            },
+            payloadTypekpKey: {
+                value: "str"
+            },
+            kpDelay: {
+                value: "0"
+            },
+            payloadTypekpDelay: {
+                value: "num"
+            },
+            kdKey: {
+                value: ""
+            },
+            payloadTypekdKey: {
+                value: "str"
+            },
+            kuKey: {
+                value: ""
+            },
+            payloadTypekuKey: {
+                value: "str"
             },
             actionType: {
                 value: "type"
@@ -58,6 +82,24 @@
         paletteLabel: "Keyboard Action",
         exportable: true,
         oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "msg"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "msg"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
             if (this.payloadTypetypeText === null) {
                 if (this.typeText === "") {
                     this.payloadTypetypeText = "date"
@@ -130,24 +172,6 @@
             })
             $("#node-input-typeTimeout").typedInput("type", this.payloadTypetypeTimeout)
 
-            if (this.payloadTypetypePageId === null) {
-                if (this.typePageId === "") {
-                    this.payloadTypetypePageId = "date"
-                } else {
-                    this.payloadTypetypePageId = "msg"
-                }
-            } else if (this.payloadTypetypePageId === 'string' || this.payloadTypetypePageId === 'none') {
-                this.payloadTypetypePageId = "msg"
-            }
-
-            $("#node-input-payloadTypetypePageId").val(this.payloadTypetypePageId)
-            $("#node-input-typePageId").typedInput({
-                default: "msg",
-                typeField: $("#node-input-payloadTypetypePageId"),
-                types: ["num", "msg", "flow", "global"]
-            })
-            $("#node-input-typePageId").typedInput("type", this.payloadTypetypePageId)
-
             if (this.payloadTypetypeIndex === null) {
                 if (this.typeIndex === "") {
                     this.payloadTypetypeIndex = "date"
@@ -166,8 +190,80 @@
             })
             $("#node-input-typeIndex").typedInput("type", this.payloadTypetypeIndex)
 
+            if (this.payloadTypekpKey === null) {
+                if (this.kpKey === "") {
+                    this.payloadTypekpKey = "date"
+                } else {
+                    this.payloadTypekpKey = "str"
+                }
+            } else if (this.payloadTypekpKey === 'string' || this.payloadTypekpKey === 'none') {
+                this.payloadTypekpKey = "str"
+            }
 
-            const actionTypeFieldSetNames = ["type"]
+            $("#node-input-payloadTypekpKey").val(this.payloadTypekpKey)
+            $("#node-input-kpKey").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypekpKey"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-kpKey").typedInput("type", this.payloadTypekpKey)
+
+            if (this.payloadTypekpDelay === null) {
+                if (this.kpDelay === "") {
+                    this.payloadTypekpDelay = "date"
+                } else {
+                    this.payloadTypekpDelay = "num"
+                }
+            } else if (this.payloadTypekpDelay === 'string' || this.payloadTypekpDelay === 'none') {
+                this.payloadTypekpDelay = "num"
+            }
+
+            $("#node-input-payloadTypekpDelay").val(this.payloadTypekpDelay)
+            $("#node-input-kpDelay").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypekpDelay"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-kpDelay").typedInput("type", this.payloadTypekpDelay)
+
+            if (this.payloadTypekdKey === null) {
+                if (this.kdKey === "") {
+                    this.payloadTypekdKey = "date"
+                } else {
+                    this.payloadTypekdKey = "str"
+                }
+            } else if (this.payloadTypekdKey === 'string' || this.payloadTypekdKey === 'none') {
+                this.payloadTypekdKey = "str"
+            }
+
+            $("#node-input-payloadTypekdKey").val(this.payloadTypekdKey)
+            $("#node-input-kdKey").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypekdKey"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-kdKey").typedInput("type", this.payloadTypekdKey)
+
+            if (this.payloadTypekuKey === null) {
+                if (this.kuKey === "") {
+                    this.payloadTypekuKey = "date"
+                } else {
+                    this.payloadTypekuKey = "str"
+                }
+            } else if (this.payloadTypekuKey === 'string' || this.payloadTypekuKey === 'none') {
+                this.payloadTypekuKey = "str"
+            }
+
+            $("#node-input-payloadTypekuKey").val(this.payloadTypekuKey)
+            $("#node-input-kuKey").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypekuKey"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-kuKey").typedInput("type", this.payloadTypekuKey)
+
+
+            const actionTypeFieldSetNames = ["type", "keyPress", "keyDown", "keyUp"]
             actionTypeFieldSetNames.forEach((fieldSetName) => {
                 $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
             })
@@ -191,8 +287,14 @@
 
 
 
+
+
+
         },
         oneditcancel: function() {
+
+
+
 
 
 
@@ -205,8 +307,14 @@
 
 
 
+
+
+
         },
         oneditresize: function() {
+
+
+
 
 
 
@@ -219,8 +327,14 @@
 
 
 
+
+
+
         },
         onpaletteremove: function() {
+
+
+
 
 
 
@@ -234,6 +348,11 @@
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
     </div>
     <div class="form-row">
         <label for="node-input-actionType">actionType</label>
@@ -262,14 +381,38 @@
             <input type="hidden" id="node-input-payloadTypetypeTimeout">
         </div>
         <div class="form-row">
-            <label for="node-input-typePageId">Page ID</label>
-            <input type="text" id="node-input-typePageId"></input>
-            <input type="hidden" id="node-input-payloadTypetypePageId">
-        </div>
-        <div class="form-row">
             <label for="node-input-typeIndex">Element index</label>
             <input type="text" id="node-input-typeIndex"></input>
             <input type="hidden" id="node-input-payloadTypetypeIndex">
+        </div>
+    </div>
+
+    <div id="fieldset-keyPress" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-kpKey">Key Name</label>
+            <input type="text" id="node-input-kpKey"></input>
+            <input type="hidden" id="node-input-payloadTypekpKey">
+        </div>
+        <div class="form-row">
+            <label for="node-input-kpDelay">Delay</label>
+            <input type="text" id="node-input-kpDelay"></input>
+            <input type="hidden" id="node-input-payloadTypekpDelay">
+        </div>
+    </div>
+
+    <div id="fieldset-keyDown" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-kdKey">Key Name</label>
+            <input type="text" id="node-input-kdKey"></input>
+            <input type="hidden" id="node-input-payloadTypekdKey">
+        </div>
+    </div>
+
+    <div id="fieldset-keyUp" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-kuKey">Key Name</label>
+            <input type="text" id="node-input-kuKey"></input>
+            <input type="hidden" id="node-input-payloadTypekuKey">
         </div>
     </div>
 </script>

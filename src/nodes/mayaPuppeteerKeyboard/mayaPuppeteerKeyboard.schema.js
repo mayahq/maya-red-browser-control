@@ -23,6 +23,7 @@ class MayaPuppeteerKeyboard extends Node {
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {
+            pageId: new fields.Typed({ type: 'msg', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
             actionType: new fields.SelectFieldSet({
                 displayName: 'Action',
                 fieldSets: {
@@ -31,9 +32,18 @@ class MayaPuppeteerKeyboard extends Node {
                         typeDelay: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Keypress delay', defaultVal: 0 }),
                         typeXpath: new fields.Typed({ type: 'msg', allowedTypes: DATStr, displayName: 'Xpath', defaultVal: 'typeXpath' }),
                         typeTimeout: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Timeout', defaultVal: 2000 }),
-                        typePageId: new fields.Typed({ type: 'msg', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
                         typeIndex: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Element index', defaultVal: 0 }),
-                    }
+                    },
+                    keyPress: {
+                        kpKey: new fields.Typed({ type: 'str', allowedTypes: DATStr, displayName: 'Key Name' }),
+                        kpDelay: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Delay', defaultVal: 0 }),
+                    },
+                    keyDown: {
+                        kdKey: new fields.Typed({ type: 'str', allowedTypes: DATStr, displayName: 'Key Name' }),
+                    },
+                    keyUp: {
+                        kuKey: new fields.Typed({ type: 'str', allowedTypes: DATStr, displayName: 'Key Name' }),
+                    },
                 }
             })
         },
@@ -70,6 +80,40 @@ class MayaPuppeteerKeyboard extends Node {
         return msg
     }
 
+    async handleKeypress({ msg, pageId, keyName, delay }) {
+        try {
+            const context = this._node.context()
+            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const page = pages[pageId]
+    
+            await page.keyboard.press(keyName, { delay })
+        } catch (e) {
+            msg.__error = new Error(`Unexpected error during keyPress: ${e}`)
+            msg.__isError = true
+        }
+
+        return msg
+    }
+
+    async handleKeyAction({ msg, pageId, keyName, action }) {
+        try {
+            const context = this._node.context()
+            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const page = pages[pageId]
+
+            if (action === 'down') {
+                await page.keyboard.down(keyName)
+            } else {
+                await page.keyboard.up(keyName)
+            }
+        } catch (e) {
+            msg.__error = new Error(`Unexpected error during keyPress: ${e}`)
+            msg.__isError = true
+        }
+
+        return msg
+    }
+
     async onMessage(msg, vals) {
         switch (vals.actionType.selected) {
             case 'type': {
@@ -78,10 +122,28 @@ class MayaPuppeteerKeyboard extends Node {
                     typeDelay: delay,
                     typeXpath: xpath,
                     typeTimeout: timeout,
-                    typePageId: pageId,
                     typeIndex: index
                  } = vals.actionType.childValues
+                 const { pageId } = vals
                  return await this.handleType({ msg, text, delay, xpath, timeout, pageId, index })
+            }
+            case 'keyPress': {
+                const {
+                    kpKey: keyName,
+                    kpDelay: delay
+                } = vals.actionType.childValues
+                const { pageId } = vals
+                return await this.handleKeypress({ msg, pageId, keyName, delay })
+            }
+            case 'keyDown': {
+                const { kdKey: keyName } = vals.actionType.childValues
+                const { pageId } = vals
+                return await this.handleKeyAction({ msg, pageId, keyName, action: 'down' })
+            }
+            case 'keyUp': {
+                const { kuKey: keyName } = vals.actionType.childValues
+                const { pageId } = vals
+                return await this.handleKeyAction({ msg, pageId, keyName, action: 'up' })
             }
             default: return msg
         }
