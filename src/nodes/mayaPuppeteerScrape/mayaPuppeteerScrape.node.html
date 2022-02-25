@@ -1,0 +1,152 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("maya-puppeteer-scrape", {
+        category: "Maya Red Browser Control",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            pageId: {
+                value: "pageIds[0].id"
+            },
+            payloadTypepageId: {
+                value: "msg"
+            },
+            query: {
+                value: ""
+            },
+            payloadTypequery: {
+                value: "json"
+            },
+            timeout: {
+                value: "2000"
+            },
+            payloadTypetimeout: {
+                value: "num"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "Scrape"
+        },
+        paletteLabel: "Scrape",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "msg"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "msg"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["msg", "global", "flow", "str"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
+            if (this.payloadTypequery === null) {
+                if (this.query === "") {
+                    this.payloadTypequery = "date"
+                } else {
+                    this.payloadTypequery = "json"
+                }
+            } else if (this.payloadTypequery === 'string' || this.payloadTypequery === 'none') {
+                this.payloadTypequery = "json"
+            }
+
+            $("#node-input-payloadTypequery").val(this.payloadTypequery)
+            $("#node-input-query").typedInput({
+                default: "json",
+                typeField: $("#node-input-payloadTypequery"),
+                types: ["msg", "flow", "global", "json"]
+            })
+            $("#node-input-query").typedInput("type", this.payloadTypequery)
+
+            if (this.payloadTypetimeout === null) {
+                if (this.timeout === "") {
+                    this.payloadTypetimeout = "date"
+                } else {
+                    this.payloadTypetimeout = "num"
+                }
+            } else if (this.payloadTypetimeout === 'string' || this.payloadTypetimeout === 'none') {
+                this.payloadTypetimeout = "num"
+            }
+
+            $("#node-input-payloadTypetimeout").val(this.payloadTypetimeout)
+            $("#node-input-timeout").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypetimeout"),
+                types: ["msg", "global", "flow", "num"]
+            })
+            $("#node-input-timeout").typedInput("type", this.payloadTypetimeout)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="maya-puppeteer-scrape">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-query">Query</label>
+        <input type="text" id="node-input-query"></input>
+        <input type="hidden" id="node-input-payloadTypequery">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout">Timeout</label>
+        <input type="text" id="node-input-timeout"></input>
+        <input type="hidden" id="node-input-payloadTypetimeout">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="maya-puppeteer-scrape">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>
