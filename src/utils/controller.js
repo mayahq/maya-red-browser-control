@@ -56,9 +56,10 @@ class PuppeteerControlServer {
     async _startBrowser(opts = {}) {
         const browser = await puppeteer.launch({
             headless: false,
-            userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
+            // userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
             defaultViewport: null,
-            channel: 'chrome',
+            executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+            // channel: 'chromium',
             ...opts,
         })
     

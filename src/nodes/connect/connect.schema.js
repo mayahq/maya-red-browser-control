@@ -50,9 +50,10 @@ class Connect extends Node {
         if (connectionType === 'new') {
             const browserClient = new LocalInstanceControl()
             await browserClient.init()
+            const { headless } = vals.connectionType.childValues
             try {
                 const { connectionId, details } = await browserClient.startBrowser({
-                    headless: false,
+                    headless: headless === 'no', // I know. Too lazy to fix.
                     defaultViewport: null
                 })
                 browser = await puppeteer.connect({

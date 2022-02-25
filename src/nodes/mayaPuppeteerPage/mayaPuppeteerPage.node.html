@@ -24,6 +24,105 @@
             waitUntil: {
                 value: "networkidle2"
             },
+            pdfDestinationPath: {
+                value: "/absolute/path/to/output/file"
+            },
+            payloadTypepdfDestinationPath: {
+                value: "str"
+            },
+            pdfScale: {
+                value: "1"
+            },
+            payloadTypepdfScale: {
+                value: "num"
+            },
+            headerTemplate: {
+                value: ""
+            },
+            payloadTypeheaderTemplate: {
+                value: "str"
+            },
+            footerTemplate: {
+                value: ""
+            },
+            payloadTypefooterTemplate: {
+                value: "str"
+            },
+            pdfOrientation: {
+                value: "portrait"
+            },
+            pdfPageFormat: {
+                value: "A4"
+            },
+            pdfTopMargin: {
+                value: ""
+            },
+            payloadTypepdfTopMargin: {
+                value: "str"
+            },
+            pdfRightMargin: {
+                value: ""
+            },
+            payloadTypepdfRightMargin: {
+                value: "str"
+            },
+            pdfBottomMargin: {
+                value: ""
+            },
+            payloadTypepdfBottomMargin: {
+                value: "str"
+            },
+            pdfLeftMargin: {
+                value: ""
+            },
+            payloadTypepdfLeftMargin: {
+                value: "str"
+            },
+            useCustomMargins: {
+                value: "No"
+            },
+            ssDestinationPath: {
+                value: "/absolute/path/to/output/file"
+            },
+            payloadTypessDestinationPath: {
+                value: "str"
+            },
+            ssType: {
+                value: "png"
+            },
+            ssQuality: {
+                value: "100"
+            },
+            payloadTypessQuality: {
+                value: "num"
+            },
+            ssx: {
+                value: "0"
+            },
+            payloadTypessx: {
+                value: "num"
+            },
+            ssy: {
+                value: "0"
+            },
+            payloadTypessy: {
+                value: "num"
+            },
+            ssWidth: {
+                value: "0"
+            },
+            payloadTypessWidth: {
+                value: "num"
+            },
+            ssHeight: {
+                value: "0"
+            },
+            payloadTypessHeight: {
+                value: "num"
+            },
+            captureArea: {
+                value: "visiblePage"
+            },
             actionType: {
                 value: "navigate"
             },
@@ -79,8 +178,314 @@
             })
             $("#node-input-waitUntil").val(this.waitUntil)
 
+            if (this.payloadTypepdfDestinationPath === null) {
+                if (this.pdfDestinationPath === "") {
+                    this.payloadTypepdfDestinationPath = "date"
+                } else {
+                    this.payloadTypepdfDestinationPath = "str"
+                }
+            } else if (this.payloadTypepdfDestinationPath === 'string' || this.payloadTypepdfDestinationPath === 'none') {
+                this.payloadTypepdfDestinationPath = "str"
+            }
 
-            const actionTypeFieldSetNames = ["navigate"]
+            $("#node-input-payloadTypepdfDestinationPath").val(this.payloadTypepdfDestinationPath)
+            $("#node-input-pdfDestinationPath").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepdfDestinationPath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfDestinationPath").typedInput("type", this.payloadTypepdfDestinationPath)
+
+            if (this.payloadTypepdfScale === null) {
+                if (this.pdfScale === "") {
+                    this.payloadTypepdfScale = "date"
+                } else {
+                    this.payloadTypepdfScale = "num"
+                }
+            } else if (this.payloadTypepdfScale === 'string' || this.payloadTypepdfScale === 'none') {
+                this.payloadTypepdfScale = "num"
+            }
+
+            $("#node-input-payloadTypepdfScale").val(this.payloadTypepdfScale)
+            $("#node-input-pdfScale").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypepdfScale"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfScale").typedInput("type", this.payloadTypepdfScale)
+
+            if (this.payloadTypeheaderTemplate === null) {
+                if (this.headerTemplate === "") {
+                    this.payloadTypeheaderTemplate = "date"
+                } else {
+                    this.payloadTypeheaderTemplate = "str"
+                }
+            } else if (this.payloadTypeheaderTemplate === 'string' || this.payloadTypeheaderTemplate === 'none') {
+                this.payloadTypeheaderTemplate = "str"
+            }
+
+            $("#node-input-payloadTypeheaderTemplate").val(this.payloadTypeheaderTemplate)
+            $("#node-input-headerTemplate").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypeheaderTemplate"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-headerTemplate").typedInput("type", this.payloadTypeheaderTemplate)
+
+            if (this.payloadTypefooterTemplate === null) {
+                if (this.footerTemplate === "") {
+                    this.payloadTypefooterTemplate = "date"
+                } else {
+                    this.payloadTypefooterTemplate = "str"
+                }
+            } else if (this.payloadTypefooterTemplate === 'string' || this.payloadTypefooterTemplate === 'none') {
+                this.payloadTypefooterTemplate = "str"
+            }
+
+            $("#node-input-payloadTypefooterTemplate").val(this.payloadTypefooterTemplate)
+            $("#node-input-footerTemplate").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypefooterTemplate"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-footerTemplate").typedInput("type", this.payloadTypefooterTemplate)
+
+            const pdfOrientationselectFieldValues = ["portrait", "landscape"]
+            pdfOrientationselectFieldValues.forEach((val) => {
+                $("#node-input-pdfOrientation").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-pdfOrientation").val(this.pdfOrientation)
+
+            const pdfPageFormatselectFieldValues = ["A0", "A1", "A2", "A3", "A4", "A5", "Legal", "Letter", "Tabloid"]
+            pdfPageFormatselectFieldValues.forEach((val) => {
+                $("#node-input-pdfPageFormat").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-pdfPageFormat").val(this.pdfPageFormat)
+
+            if (this.payloadTypepdfTopMargin === null) {
+                if (this.pdfTopMargin === "") {
+                    this.payloadTypepdfTopMargin = "date"
+                } else {
+                    this.payloadTypepdfTopMargin = "str"
+                }
+            } else if (this.payloadTypepdfTopMargin === 'string' || this.payloadTypepdfTopMargin === 'none') {
+                this.payloadTypepdfTopMargin = "str"
+            }
+
+            $("#node-input-payloadTypepdfTopMargin").val(this.payloadTypepdfTopMargin)
+            $("#node-input-pdfTopMargin").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepdfTopMargin"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfTopMargin").typedInput("type", this.payloadTypepdfTopMargin)
+
+            if (this.payloadTypepdfRightMargin === null) {
+                if (this.pdfRightMargin === "") {
+                    this.payloadTypepdfRightMargin = "date"
+                } else {
+                    this.payloadTypepdfRightMargin = "str"
+                }
+            } else if (this.payloadTypepdfRightMargin === 'string' || this.payloadTypepdfRightMargin === 'none') {
+                this.payloadTypepdfRightMargin = "str"
+            }
+
+            $("#node-input-payloadTypepdfRightMargin").val(this.payloadTypepdfRightMargin)
+            $("#node-input-pdfRightMargin").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepdfRightMargin"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfRightMargin").typedInput("type", this.payloadTypepdfRightMargin)
+
+            if (this.payloadTypepdfBottomMargin === null) {
+                if (this.pdfBottomMargin === "") {
+                    this.payloadTypepdfBottomMargin = "date"
+                } else {
+                    this.payloadTypepdfBottomMargin = "str"
+                }
+            } else if (this.payloadTypepdfBottomMargin === 'string' || this.payloadTypepdfBottomMargin === 'none') {
+                this.payloadTypepdfBottomMargin = "str"
+            }
+
+            $("#node-input-payloadTypepdfBottomMargin").val(this.payloadTypepdfBottomMargin)
+            $("#node-input-pdfBottomMargin").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepdfBottomMargin"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfBottomMargin").typedInput("type", this.payloadTypepdfBottomMargin)
+
+            if (this.payloadTypepdfLeftMargin === null) {
+                if (this.pdfLeftMargin === "") {
+                    this.payloadTypepdfLeftMargin = "date"
+                } else {
+                    this.payloadTypepdfLeftMargin = "str"
+                }
+            } else if (this.payloadTypepdfLeftMargin === 'string' || this.payloadTypepdfLeftMargin === 'none') {
+                this.payloadTypepdfLeftMargin = "str"
+            }
+
+            $("#node-input-payloadTypepdfLeftMargin").val(this.payloadTypepdfLeftMargin)
+            $("#node-input-pdfLeftMargin").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypepdfLeftMargin"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-pdfLeftMargin").typedInput("type", this.payloadTypepdfLeftMargin)
+
+
+            const useCustomMarginsFieldSetNames = ["No", "Yes"]
+            useCustomMarginsFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-useCustomMargins").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-useCustomMargins").val(this.useCustomMargins)
+            $("#node-input-useCustomMargins").on("change", (e) => {
+                const newFieldSet = e.target.value
+                useCustomMarginsFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-useCustomMargins").val(e.target.value)
+            })
+
+            if (this.payloadTypessDestinationPath === null) {
+                if (this.ssDestinationPath === "") {
+                    this.payloadTypessDestinationPath = "date"
+                } else {
+                    this.payloadTypessDestinationPath = "str"
+                }
+            } else if (this.payloadTypessDestinationPath === 'string' || this.payloadTypessDestinationPath === 'none') {
+                this.payloadTypessDestinationPath = "str"
+            }
+
+            $("#node-input-payloadTypessDestinationPath").val(this.payloadTypessDestinationPath)
+            $("#node-input-ssDestinationPath").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypessDestinationPath"),
+                types: ["str", "msg", "flow", "global"]
+            })
+            $("#node-input-ssDestinationPath").typedInput("type", this.payloadTypessDestinationPath)
+
+            const ssTypeselectFieldValues = ["png", "jpeg", "webp"]
+            ssTypeselectFieldValues.forEach((val) => {
+                $("#node-input-ssType").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-ssType").val(this.ssType)
+
+            if (this.payloadTypessQuality === null) {
+                if (this.ssQuality === "") {
+                    this.payloadTypessQuality = "date"
+                } else {
+                    this.payloadTypessQuality = "num"
+                }
+            } else if (this.payloadTypessQuality === 'string' || this.payloadTypessQuality === 'none') {
+                this.payloadTypessQuality = "num"
+            }
+
+            $("#node-input-payloadTypessQuality").val(this.payloadTypessQuality)
+            $("#node-input-ssQuality").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypessQuality"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-ssQuality").typedInput("type", this.payloadTypessQuality)
+
+            if (this.payloadTypessx === null) {
+                if (this.ssx === "") {
+                    this.payloadTypessx = "date"
+                } else {
+                    this.payloadTypessx = "num"
+                }
+            } else if (this.payloadTypessx === 'string' || this.payloadTypessx === 'none') {
+                this.payloadTypessx = "num"
+            }
+
+            $("#node-input-payloadTypessx").val(this.payloadTypessx)
+            $("#node-input-ssx").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypessx"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-ssx").typedInput("type", this.payloadTypessx)
+
+            if (this.payloadTypessy === null) {
+                if (this.ssy === "") {
+                    this.payloadTypessy = "date"
+                } else {
+                    this.payloadTypessy = "num"
+                }
+            } else if (this.payloadTypessy === 'string' || this.payloadTypessy === 'none') {
+                this.payloadTypessy = "num"
+            }
+
+            $("#node-input-payloadTypessy").val(this.payloadTypessy)
+            $("#node-input-ssy").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypessy"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-ssy").typedInput("type", this.payloadTypessy)
+
+            if (this.payloadTypessWidth === null) {
+                if (this.ssWidth === "") {
+                    this.payloadTypessWidth = "date"
+                } else {
+                    this.payloadTypessWidth = "num"
+                }
+            } else if (this.payloadTypessWidth === 'string' || this.payloadTypessWidth === 'none') {
+                this.payloadTypessWidth = "num"
+            }
+
+            $("#node-input-payloadTypessWidth").val(this.payloadTypessWidth)
+            $("#node-input-ssWidth").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypessWidth"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-ssWidth").typedInput("type", this.payloadTypessWidth)
+
+            if (this.payloadTypessHeight === null) {
+                if (this.ssHeight === "") {
+                    this.payloadTypessHeight = "date"
+                } else {
+                    this.payloadTypessHeight = "num"
+                }
+            } else if (this.payloadTypessHeight === 'string' || this.payloadTypessHeight === 'none') {
+                this.payloadTypessHeight = "num"
+            }
+
+            $("#node-input-payloadTypessHeight").val(this.payloadTypessHeight)
+            $("#node-input-ssHeight").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypessHeight"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-ssHeight").typedInput("type", this.payloadTypessHeight)
+
+
+            const captureAreaFieldSetNames = ["visiblePage", "fullScrollablePage", "custom"]
+            captureAreaFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-captureArea").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-captureArea").val(this.captureArea)
+            $("#node-input-captureArea").on("change", (e) => {
+                const newFieldSet = e.target.value
+                captureAreaFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-captureArea").val(e.target.value)
+            })
+
+
+            const actionTypeFieldSetNames = ["navigate", "generatePDF", "screenshot"]
             actionTypeFieldSetNames.forEach((fieldSetName) => {
                 $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
             })
@@ -98,12 +503,102 @@
             })
 
         },
-        oneditsave: function() {},
-        oneditcancel: function() {},
-        oneditdelete: function() {},
-        oneditresize: function() {},
-        onpaletteadd: function() {},
-        onpaletteremove: function() {}
+        oneditsave: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        oneditcancel: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        oneditdelete: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        oneditresize: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        onpaletteadd: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        },
+        onpaletteremove: function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
     });
 </script>
 
@@ -113,16 +608,16 @@
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
     </div>
     <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
+    </div>
+    <div class="form-row">
         <label for="node-input-actionType">actionType</label>
         <select type="text" id="node-input-actionType">
         </select>
     </div>
     <div id="fieldset-navigate" style="padding-left: 10px;">
-        <div class="form-row">
-            <label for="node-input-pageId">Page ID</label>
-            <input type="text" id="node-input-pageId"></input>
-            <input type="hidden" id="node-input-payloadTypepageId">
-        </div>
         <div class="form-row">
             <label for="node-input-url">URL</label>
             <input type="text" id="node-input-url"></input>
@@ -132,6 +627,123 @@
             <label for="node-input-waitUntil">waitUntil</label>
             <select type="text" id="node-input-waitUntil">
             </select>
+        </div>
+    </div>
+
+    <div id="fieldset-generatePDF" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-pdfDestinationPath">Ouput file path</label>
+            <input type="text" id="node-input-pdfDestinationPath"></input>
+            <input type="hidden" id="node-input-payloadTypepdfDestinationPath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-pdfScale">Scale</label>
+            <input type="text" id="node-input-pdfScale"></input>
+            <input type="hidden" id="node-input-payloadTypepdfScale">
+        </div>
+        <div class="form-row">
+            <label for="node-input-headerTemplate">Header HTML</label>
+            <input type="text" id="node-input-headerTemplate"></input>
+            <input type="hidden" id="node-input-payloadTypeheaderTemplate">
+        </div>
+        <div class="form-row">
+            <label for="node-input-footerTemplate">Footer HTML</label>
+            <input type="text" id="node-input-footerTemplate"></input>
+            <input type="hidden" id="node-input-payloadTypefooterTemplate">
+        </div>
+        <div class="form-row">
+            <label for="node-input-pdfOrientation">Orientation</label>
+            <select type="text" id="node-input-pdfOrientation">
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-pdfPageFormat">Page format</label>
+            <select type="text" id="node-input-pdfPageFormat">
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-useCustomMargins">useCustomMargins</label>
+            <select type="text" id="node-input-useCustomMargins">
+            </select>
+        </div>
+        <div id="fieldset-No" style="padding-left: 10px;">
+
+        </div>
+
+        <div id="fieldset-Yes" style="padding-left: 10px;">
+            <div class="form-row">
+                <label for="node-input-pdfTopMargin">Top</label>
+                <input type="text" id="node-input-pdfTopMargin"></input>
+                <input type="hidden" id="node-input-payloadTypepdfTopMargin">
+            </div>
+            <div class="form-row">
+                <label for="node-input-pdfRightMargin">Right</label>
+                <input type="text" id="node-input-pdfRightMargin"></input>
+                <input type="hidden" id="node-input-payloadTypepdfRightMargin">
+            </div>
+            <div class="form-row">
+                <label for="node-input-pdfBottomMargin">Bottom</label>
+                <input type="text" id="node-input-pdfBottomMargin"></input>
+                <input type="hidden" id="node-input-payloadTypepdfBottomMargin">
+            </div>
+            <div class="form-row">
+                <label for="node-input-pdfLeftMargin">Left</label>
+                <input type="text" id="node-input-pdfLeftMargin"></input>
+                <input type="hidden" id="node-input-payloadTypepdfLeftMargin">
+            </div>
+        </div>
+    </div>
+
+    <div id="fieldset-screenshot" style="padding-left: 10px;">
+        <div class="form-row">
+            <label for="node-input-ssDestinationPath">Ouput file path</label>
+            <input type="text" id="node-input-ssDestinationPath"></input>
+            <input type="hidden" id="node-input-payloadTypessDestinationPath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-ssType">Type</label>
+            <select type="text" id="node-input-ssType">
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ssQuality">Quality (1-100)</label>
+            <input type="text" id="node-input-ssQuality"></input>
+            <input type="hidden" id="node-input-payloadTypessQuality">
+        </div>
+        <div class="form-row">
+            <label for="node-input-captureArea">captureArea</label>
+            <select type="text" id="node-input-captureArea">
+            </select>
+        </div>
+        <div id="fieldset-visiblePage" style="padding-left: 10px;">
+
+        </div>
+
+        <div id="fieldset-fullScrollablePage" style="padding-left: 10px;">
+
+        </div>
+
+        <div id="fieldset-custom" style="padding-left: 10px;">
+            <div class="form-row">
+                <label for="node-input-ssx">X coordinate</label>
+                <input type="text" id="node-input-ssx"></input>
+                <input type="hidden" id="node-input-payloadTypessx">
+            </div>
+            <div class="form-row">
+                <label for="node-input-ssy">Y coordinate</label>
+                <input type="text" id="node-input-ssy"></input>
+                <input type="hidden" id="node-input-payloadTypessy">
+            </div>
+            <div class="form-row">
+                <label for="node-input-ssWidth">Width</label>
+                <input type="text" id="node-input-ssWidth"></input>
+                <input type="hidden" id="node-input-payloadTypessWidth">
+            </div>
+            <div class="form-row">
+                <label for="node-input-ssHeight">Height</label>
+                <input type="text" id="node-input-ssHeight"></input>
+                <input type="hidden" id="node-input-payloadTypessHeight">
+            </div>
         </div>
     </div>
 </script>
