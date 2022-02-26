@@ -4,6 +4,7 @@ const {
     fields
 } = require('@mayahq/module-sdk')
 const puppeteer = require('puppeteer-core')
+const { nodeColor } = require('../../constants')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
 const DATNum = ['num', 'msg', 'flow', 'global']
@@ -30,6 +31,8 @@ class MayaPuppeteerPage extends Node {
         label: 'Page Action',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             pageId: new fields.Typed({ type: 'msg', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
             actionType: new fields.SelectFieldSet({

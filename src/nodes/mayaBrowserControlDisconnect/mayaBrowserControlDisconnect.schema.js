@@ -2,6 +2,7 @@ const {
     Node,
     Schema
 } = require('@mayahq/module-sdk')
+const { nodeColor } = require('../../constants')
 const LocalInstanceControl = require('../../utils/client')
 
 class MayaBrowserControlDisconnect extends Node {
@@ -14,11 +15,13 @@ class MayaBrowserControlDisconnect extends Node {
 
     static schema = new Schema({
         name: 'maya-browser-control-disconnect',
-        label: 'disconnect',
+        label: 'Disconnect',
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {},
-
+        icon: 'font-awesome/fa-chrome',
+        color: nodeColor,
+        icon: 'chrome.png'
     })
 
     onInit() {}

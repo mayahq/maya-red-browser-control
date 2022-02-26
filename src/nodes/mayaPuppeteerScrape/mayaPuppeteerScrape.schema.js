@@ -3,6 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
+const { nodeColor } = require('../../constants')
 const evaluateQuery = require('../../utils/webql')
 
 class MayaPuppeteerScrape extends Node {
@@ -18,6 +19,8 @@ class MayaPuppeteerScrape extends Node {
         label: 'Scrape',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             pageId: new fields.Typed({ type: 'msg', allowedTypes: ['msg', 'global', 'flow', 'str'], defaultVal:'pageIds[0]', displayName: 'Page ID'}),
             query: new fields.Typed({ type: 'json', allowedTypes: ['msg', 'flow', 'global'], displayName: 'Query' }),

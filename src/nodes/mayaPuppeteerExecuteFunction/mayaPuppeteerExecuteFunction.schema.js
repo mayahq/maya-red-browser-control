@@ -4,6 +4,7 @@ const {
     fields
 } = require('@mayahq/module-sdk')
 const puppeteer = require('puppeteer-core')
+const { nodeColor } = require('../../constants')
 const getElementsWithXpath = require('../../utils/getElementsWithXpath')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
@@ -23,6 +24,8 @@ class MayaPuppeteerExecuteFunction extends Node {
         label: 'Execute Function',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             pageId: new fields.Typed({ type: 'num', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 0 }),
             xpath: new fields.Typed({ type: 'msg', allowedTypes: DATStr, displayName: 'Xpath', defaultVal: 'clickXpath' }),

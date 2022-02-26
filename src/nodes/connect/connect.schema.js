@@ -5,6 +5,7 @@ const {
 } = require('@mayahq/module-sdk')
 
 const puppeteer = require('puppeteer-core')
+const { nodeColor } = require('../../constants')
 const LocalInstanceControl = require('../../utils/client')
 const BROWSER_BIN_PATH = '/Users/dushyant/Chromium.app/Contents/MacOS/Chromium'
 const USER_DATA_DIR = '/Users/dushyant/Library/Application Support/Google/Chrome'
@@ -22,6 +23,8 @@ class Connect extends Node {
         label: 'connect',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             connectionType: new fields.SelectFieldSet({
                 fieldSets: {

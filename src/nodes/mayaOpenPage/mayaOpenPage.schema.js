@@ -4,6 +4,7 @@ const {
     fields
 } = require('@mayahq/module-sdk')
 const puppeteer = require('puppeteer-core')
+const { nodeColor } = require('../../constants')
 
 const DAT = ['str', 'msg', 'flow', 'global']
 const DATNum = ['num', 'msg', 'flow', 'global']
@@ -28,6 +29,8 @@ class MayaOpenPage extends Node {
         label: 'Open Page',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        icon: 'chrome.png',
+        color: nodeColor,
         fields: {
             url: new fields.Typed({ type: 'msg', allowedTypes: DAT, displayName: 'URL', defaultVal: 'url' }),
             waitUntil: new fields.Select({ defaultVal: 'networkidle2', options: waitOptions}),

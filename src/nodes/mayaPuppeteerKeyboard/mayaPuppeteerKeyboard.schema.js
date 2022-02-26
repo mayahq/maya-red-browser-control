@@ -4,6 +4,7 @@ const {
     fields
 } = require('@mayahq/module-sdk')
 const puppeteer = require('puppeteer-core')
+const { nodeColor } = require('../../constants')
 const getElementsWithXpath = require('../../utils/getElementsWithXpath')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
@@ -22,6 +23,8 @@ class MayaPuppeteerKeyboard extends Node {
         label: 'Keyboard Action',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             pageId: new fields.Typed({ type: 'msg', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
             actionType: new fields.SelectFieldSet({

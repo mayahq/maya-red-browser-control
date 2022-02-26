@@ -3,6 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
+const { nodeColor } = require('../../constants')
 const getElementsWithXpath = require('../../utils/getElementsWithXpath')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
@@ -21,6 +22,8 @@ class MayaPuppeteerFileUpload extends Node {
         label: 'Upload File',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        icon: 'chrome.png',
+        color: nodeColor,
         fields: {
             pageId: new fields.Typed({ type: 'msg', allowedTypes: DATStr, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
             inputXpath: new fields.Typed({ type: 'str', allowedTypes: DATStr, displayName: 'Input xpath', defaultVal: '//input' }),

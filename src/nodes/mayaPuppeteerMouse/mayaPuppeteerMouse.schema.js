@@ -3,6 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
+const { nodeColor } = require('../../constants')
 const getElementsWithXpath = require('../../utils/getElementsWithXpath')
 
 const DATStr = ['str', 'msg', 'flow', 'global']
@@ -21,6 +22,8 @@ class MayaPuppeteerMouse extends Node {
         label: 'Mouse Action',
         category: 'Maya Red Browser Control',
         isConfig: false,
+        color: nodeColor,
+        icon: 'chrome.png',
         fields: {
             pageId: new fields.Typed({ type: 'msg', allowedTypes: DATNum, displayName: 'Page ID', defaultVal: 'pageIds[0]' }),
             actionType: new fields.SelectFieldSet({
