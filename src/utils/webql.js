@@ -82,13 +82,10 @@ const getXpathElems = async (parent, xpath, timeout = 0) => {
  * @returns 
  */
 async function resolveXpathQuery(parent, query, timeout = 0) {
-    // console.log('Resolving', query)
     if (Array.isArray(query)) {
         if (query.length === 0) {
             return null
         }
-
-        console.log('Resolving array', query)
 
         const tempRes = []
         for (let i = 0; i < query.length; i++) {
@@ -107,11 +104,10 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
                         tempRes.push('')
                     }
                 }
-                return
+                continue
             }
     
             if (!nspec._xpath) {
-                console.log(nspec)
                 const err = new Error('Must specify _xpath for array of nodes')
                 err.type = 'INVALID_QUERY_SPEC'
                 err.description = 'Must specify _xpath for array of nodes'
@@ -122,7 +118,6 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
             for (let j = 0; j < elems.length; j++) {
                 const elem = elems[j]
                 const result = await resolveXpathQuery(elem, nspec, timeout)
-                // console.log('elemres', result)
                 tempRes.push(result)
             }
         }
@@ -216,6 +211,14 @@ module.exports = evaluateQuery
 //         }
 //     }]
 // }
+
+// const query = {
+//     channels: [
+//         "//*[@id='dismissible' and contains(@class, 'compact')]//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']//ytd-channel-name//yt-formatted-string"
+//     ]
+// }
+
+// //*[@id='dismissible' and contains(@class, 'compact')]//ytd-video-meta-block//div[@id='metadata']//div[@id='byline-container']//ytd-channel-name//yt-formatted-string
 
 
 // async function test() {

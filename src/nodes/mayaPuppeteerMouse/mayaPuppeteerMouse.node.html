@@ -9,6 +9,12 @@
             isProfileConfigNode: {
                 value: false
             },
+            pageId: {
+                value: "pageIds[0]"
+            },
+            payloadTypepageId: {
+                value: "msg"
+            },
             clickXpath: {
                 value: "clickXpath"
             },
@@ -19,12 +25,6 @@
                 value: "2000"
             },
             payloadTypeclickTimeout: {
-                value: "num"
-            },
-            clickPageId: {
-                value: "0"
-            },
-            payloadTypeclickPageId: {
                 value: "num"
             },
             clickIndex: {
@@ -45,23 +45,38 @@
             payloadTypehoverTimeout: {
                 value: "num"
             },
-            hoverPageId: {
-                value: "0"
-            },
-            payloadTypehoverPageId: {
-                value: "num"
-            },
             hoverIndex: {
                 value: "0"
             },
             payloadTypehoverIndex: {
                 value: "num"
             },
+            verticalScrollAmount: {
+                value: "1000"
+            },
+            payloadTypeverticalScrollAmount: {
+                value: "num"
+            },
+            horizontalScrollAmount: {
+                value: "1000"
+            },
+            payloadTypehorizontalScrollAmount: {
+                value: "num"
+            },
+            scrollType: {
+                value: "intoView"
+            },
             scrollXpath: {
-                value: "scrollXpath"
+                value: "/"
             },
             payloadTypescrollXpath: {
-                value: "msg"
+                value: "str"
+            },
+            scrollIndex: {
+                value: "0"
+            },
+            payloadTypescrollIndex: {
+                value: "num"
             },
             actionType: {
                 value: "click"
@@ -76,6 +91,24 @@
         paletteLabel: "Mouse Action",
         exportable: true,
         oneditprepare: function() {
+            if (this.payloadTypepageId === null) {
+                if (this.pageId === "") {
+                    this.payloadTypepageId = "date"
+                } else {
+                    this.payloadTypepageId = "msg"
+                }
+            } else if (this.payloadTypepageId === 'string' || this.payloadTypepageId === 'none') {
+                this.payloadTypepageId = "msg"
+            }
+
+            $("#node-input-payloadTypepageId").val(this.payloadTypepageId)
+            $("#node-input-pageId").typedInput({
+                default: "msg",
+                typeField: $("#node-input-payloadTypepageId"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-pageId").typedInput("type", this.payloadTypepageId)
+
             if (this.payloadTypeclickXpath === null) {
                 if (this.clickXpath === "") {
                     this.payloadTypeclickXpath = "date"
@@ -111,24 +144,6 @@
                 types: ["num", "msg", "flow", "global"]
             })
             $("#node-input-clickTimeout").typedInput("type", this.payloadTypeclickTimeout)
-
-            if (this.payloadTypeclickPageId === null) {
-                if (this.clickPageId === "") {
-                    this.payloadTypeclickPageId = "date"
-                } else {
-                    this.payloadTypeclickPageId = "num"
-                }
-            } else if (this.payloadTypeclickPageId === 'string' || this.payloadTypeclickPageId === 'none') {
-                this.payloadTypeclickPageId = "num"
-            }
-
-            $("#node-input-payloadTypeclickPageId").val(this.payloadTypeclickPageId)
-            $("#node-input-clickPageId").typedInput({
-                default: "num",
-                typeField: $("#node-input-payloadTypeclickPageId"),
-                types: ["num", "msg", "flow", "global"]
-            })
-            $("#node-input-clickPageId").typedInput("type", this.payloadTypeclickPageId)
 
             if (this.payloadTypeclickIndex === null) {
                 if (this.clickIndex === "") {
@@ -184,24 +199,6 @@
             })
             $("#node-input-hoverTimeout").typedInput("type", this.payloadTypehoverTimeout)
 
-            if (this.payloadTypehoverPageId === null) {
-                if (this.hoverPageId === "") {
-                    this.payloadTypehoverPageId = "date"
-                } else {
-                    this.payloadTypehoverPageId = "num"
-                }
-            } else if (this.payloadTypehoverPageId === 'string' || this.payloadTypehoverPageId === 'none') {
-                this.payloadTypehoverPageId = "num"
-            }
-
-            $("#node-input-payloadTypehoverPageId").val(this.payloadTypehoverPageId)
-            $("#node-input-hoverPageId").typedInput({
-                default: "num",
-                typeField: $("#node-input-payloadTypehoverPageId"),
-                types: ["num", "msg", "flow", "global"]
-            })
-            $("#node-input-hoverPageId").typedInput("type", this.payloadTypehoverPageId)
-
             if (this.payloadTypehoverIndex === null) {
                 if (this.hoverIndex === "") {
                     this.payloadTypehoverIndex = "date"
@@ -220,23 +217,95 @@
             })
             $("#node-input-hoverIndex").typedInput("type", this.payloadTypehoverIndex)
 
+            if (this.payloadTypeverticalScrollAmount === null) {
+                if (this.verticalScrollAmount === "") {
+                    this.payloadTypeverticalScrollAmount = "date"
+                } else {
+                    this.payloadTypeverticalScrollAmount = "num"
+                }
+            } else if (this.payloadTypeverticalScrollAmount === 'string' || this.payloadTypeverticalScrollAmount === 'none') {
+                this.payloadTypeverticalScrollAmount = "num"
+            }
+
+            $("#node-input-payloadTypeverticalScrollAmount").val(this.payloadTypeverticalScrollAmount)
+            $("#node-input-verticalScrollAmount").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeverticalScrollAmount"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-verticalScrollAmount").typedInput("type", this.payloadTypeverticalScrollAmount)
+
+            if (this.payloadTypehorizontalScrollAmount === null) {
+                if (this.horizontalScrollAmount === "") {
+                    this.payloadTypehorizontalScrollAmount = "date"
+                } else {
+                    this.payloadTypehorizontalScrollAmount = "num"
+                }
+            } else if (this.payloadTypehorizontalScrollAmount === 'string' || this.payloadTypehorizontalScrollAmount === 'none') {
+                this.payloadTypehorizontalScrollAmount = "num"
+            }
+
+            $("#node-input-payloadTypehorizontalScrollAmount").val(this.payloadTypehorizontalScrollAmount)
+            $("#node-input-horizontalScrollAmount").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypehorizontalScrollAmount"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-horizontalScrollAmount").typedInput("type", this.payloadTypehorizontalScrollAmount)
+
+
+            const scrollTypeFieldSetNames = ["intoView", "byAmount"]
+            scrollTypeFieldSetNames.forEach((fieldSetName) => {
+                $("#node-input-scrollType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+            })
+
+            $("#node-input-scrollType").val(this.scrollType)
+            $("#node-input-scrollType").on("change", (e) => {
+                const newFieldSet = e.target.value
+                scrollTypeFieldSetNames.forEach((fieldSetName) => {
+                    if (fieldSetName !== newFieldSet) {
+                        document.querySelector("div#fieldset-" + fieldSetName).style.display = 'none'
+                    }
+                })
+                document.querySelector("div#fieldset-" + newFieldSet).style.display = ''
+                $("#node-input-scrollType").val(e.target.value)
+            })
+
             if (this.payloadTypescrollXpath === null) {
                 if (this.scrollXpath === "") {
                     this.payloadTypescrollXpath = "date"
                 } else {
-                    this.payloadTypescrollXpath = "msg"
+                    this.payloadTypescrollXpath = "str"
                 }
             } else if (this.payloadTypescrollXpath === 'string' || this.payloadTypescrollXpath === 'none') {
-                this.payloadTypescrollXpath = "msg"
+                this.payloadTypescrollXpath = "str"
             }
 
             $("#node-input-payloadTypescrollXpath").val(this.payloadTypescrollXpath)
             $("#node-input-scrollXpath").typedInput({
-                default: "msg",
+                default: "str",
                 typeField: $("#node-input-payloadTypescrollXpath"),
                 types: ["str", "msg", "flow", "global"]
             })
             $("#node-input-scrollXpath").typedInput("type", this.payloadTypescrollXpath)
+
+            if (this.payloadTypescrollIndex === null) {
+                if (this.scrollIndex === "") {
+                    this.payloadTypescrollIndex = "date"
+                } else {
+                    this.payloadTypescrollIndex = "num"
+                }
+            } else if (this.payloadTypescrollIndex === 'string' || this.payloadTypescrollIndex === 'none') {
+                this.payloadTypescrollIndex = "num"
+            }
+
+            $("#node-input-payloadTypescrollIndex").val(this.payloadTypescrollIndex)
+            $("#node-input-scrollIndex").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypescrollIndex"),
+                types: ["num", "msg", "flow", "global"]
+            })
+            $("#node-input-scrollIndex").typedInput("type", this.payloadTypescrollIndex)
 
 
             const actionTypeFieldSetNames = ["click", "hover", "scroll"]
@@ -326,6 +395,11 @@
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
     </div>
     <div class="form-row">
+        <label for="node-input-pageId">Page ID</label>
+        <input type="text" id="node-input-pageId"></input>
+        <input type="hidden" id="node-input-payloadTypepageId">
+    </div>
+    <div class="form-row">
         <label for="node-input-actionType">actionType</label>
         <select type="text" id="node-input-actionType">
         </select>
@@ -340,11 +414,6 @@
             <label for="node-input-clickTimeout">Timeout</label>
             <input type="text" id="node-input-clickTimeout"></input>
             <input type="hidden" id="node-input-payloadTypeclickTimeout">
-        </div>
-        <div class="form-row">
-            <label for="node-input-clickPageId">Page ID</label>
-            <input type="text" id="node-input-clickPageId"></input>
-            <input type="hidden" id="node-input-payloadTypeclickPageId">
         </div>
         <div class="form-row">
             <label for="node-input-clickIndex">Element index</label>
@@ -365,11 +434,6 @@
             <input type="hidden" id="node-input-payloadTypehoverTimeout">
         </div>
         <div class="form-row">
-            <label for="node-input-hoverPageId">Page ID</label>
-            <input type="text" id="node-input-hoverPageId"></input>
-            <input type="hidden" id="node-input-payloadTypehoverPageId">
-        </div>
-        <div class="form-row">
             <label for="node-input-hoverIndex">Element index</label>
             <input type="text" id="node-input-hoverIndex"></input>
             <input type="hidden" id="node-input-payloadTypehoverIndex">
@@ -378,9 +442,35 @@
 
     <div id="fieldset-scroll" style="padding-left: 10px;">
         <div class="form-row">
+            <label for="node-input-scrollType">scrollType</label>
+            <select type="text" id="node-input-scrollType">
+            </select>
+        </div>
+        <div id="fieldset-intoView" style="padding-left: 10px;">
+
+        </div>
+
+        <div id="fieldset-byAmount" style="padding-left: 10px;">
+            <div class="form-row">
+                <label for="node-input-verticalScrollAmount">Vertical amount</label>
+                <input type="text" id="node-input-verticalScrollAmount"></input>
+                <input type="hidden" id="node-input-payloadTypeverticalScrollAmount">
+            </div>
+            <div class="form-row">
+                <label for="node-input-horizontalScrollAmount">Horizontal amount</label>
+                <input type="text" id="node-input-horizontalScrollAmount"></input>
+                <input type="hidden" id="node-input-payloadTypehorizontalScrollAmount">
+            </div>
+        </div>
+        <div class="form-row">
             <label for="node-input-scrollXpath">Xpath</label>
             <input type="text" id="node-input-scrollXpath"></input>
             <input type="hidden" id="node-input-payloadTypescrollXpath">
+        </div>
+        <div class="form-row">
+            <label for="node-input-scrollIndex">Element index</label>
+            <input type="text" id="node-input-scrollIndex"></input>
+            <input type="hidden" id="node-input-payloadTypescrollIndex">
         </div>
     </div>
 </script>

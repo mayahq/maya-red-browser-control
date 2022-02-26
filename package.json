@@ -26,7 +26,8 @@
       "maya-puppeteer-file-upload": "src/nodes/mayaPuppeteerFileUpload/mayaPuppeteerFileUpload.node.js",
       "maya-puppeteer-page": "src/nodes/mayaPuppeteerPage/mayaPuppeteerPage.node.js",
       "maya-puppeteer-execute-function": "src/nodes/mayaPuppeteerExecuteFunction/mayaPuppeteerExecuteFunction.node.js",
-      "maya-puppeteer-scrape": "src/nodes/mayaPuppeteerScrape/mayaPuppeteerScrape.node.js"
+      "maya-puppeteer-scrape": "src/nodes/mayaPuppeteerScrape/mayaPuppeteerScrape.node.js",
+      "maya-puppeteer-query": "src/special-nodes/mayaBrowserQuery/mayaPuppeteerQuery.js"
     }
   },
   "mayaDetails": {
@@ -47,6 +48,7 @@
     "@mayahq/module-sdk": "^0.4.11",
     "axios": "^0.21.4",
     "chrome-launcher": "^0.15.0",
+    "jsonata": "^1.8.6",
     "node-ipc": "^10.1.0",
     "puppeteer-core": "^13.3.1"
   }
