@@ -41,6 +41,9 @@
     "repository": {
       "type": "git",
       "url": "git+https://github.com/mayahq/maya-red-browser-control.git"
+    },
+    "origin": {
+      "moduleId": "621f7f98f36d03001b791c19"
     }
   },
   "dependencies": {
