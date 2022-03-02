@@ -181,7 +181,7 @@
 	    <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
 	</div>
 	<div class="form-row">
-    <label for="node-input-pageId">tab Id </label>
+    <label for="node-input-pageId">Page ID</label>
     <input type="text" id="node-input-pageId"></input>
     <input type="hidden" id="node-input-payloadTypePageId">
   </div>
@@ -215,17 +215,12 @@
     <dl class="message-properties">
 				<dt>Connection</dt>
 				<dd>Config node to setup secure connection with the extension</dd>
-				<dt>tab id<span class="property-type">string | num</span></dt>
+				<dt>Page ID<span class="property-type">string | num</span></dt>
 				<dd>
-					The unique tab id in which the website to be queried is rendered in. It can be obtained in using 
-					<code> {"url":"*://*.[domain]/*"}</code> in the <code>find tab</code> node.
-					For e.g. 
-					<code>{"url":"*://*.[domain]/*"}</code> where domain can be anything like <code>google.com</code> or <code>amazon.in</code>.
-					There are other query elements which can be added to same object as referenced above. One common one to be used is for <code>
-					activeTab</code> which takes in a <code>boolean</code> to search for a tab in focus with the url pattern matching above.
+					The pageId of the page on which the query operation is to be performed
 				</dd>
 				<dt>timeout<span class="property-type">num</span></dt>
-				<dd>Timeout in milliseconds to be set to timeout if no response is received from the extension</dd>
+				<dd>The maximum amount of time that Maya will wait for each xpath in the query to resolve</dd>
 				<dt>Selectors<span class="property-type">editable list</span></dt>
 				<dd>The selectors edit field is a dynamic field and any number of entry set can be created using using the elements+ button below. The entry consists of three fields per entry</dd>
 				<ul class="node-ports">
