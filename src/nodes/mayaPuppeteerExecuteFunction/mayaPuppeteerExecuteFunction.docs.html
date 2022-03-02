@@ -1,25 +1,63 @@
-<h2>Description</h2>
-<p>Query opens tabs based on criteria like URL, muted status</p>
+<h2 data-type="description-title">Description</h2>
+<p data-type="description-summary">Execute a method defined on an element on the page</p>
 
-<h2>Config</h2>
+<h2 data-type="inputs">Inputs</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
+    <dt>
+        <span class="property-name">Page ID</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The pageId of the page that contains the target element
+    </dd>
 
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>
+        <span class="property-name">Xpath</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The xpath of the target element
+    </dd>
 
+    <dt>
+        <span class="property-name">Timeout</span>
+        <span class="property-type">int</span>
+    </dt>
+    <dd>
+        Time (in milliseconds) for which the node will wait for the target element (
+        as specified by the xpath) to appear on the page
+    </dd>
+
+    <dt>
+        <span class="property-name">Element index</span>
+        <span class="property-type">int</span>
+    </dt>
+    <dd>
+        If multiple elements correspond to the given xpath, this is the index of the 
+        desired element
+    </dd>
+
+    <dt>
+        <span class="property-name">Function name</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        Name of the target element's method that needs to be executed. For example, if the target 
+        element is a video tag, the function name could be "play"
+    </dd>
+
+    <dt>
+        <span class="property-name">Arguments</span>
+        <span class="property-type">json array</span>
+    </dt>
+    <dd>
+        List of arguments - in order - that will be passed to the function
+    </dd>
 </dl>
 
 
-<h2>Outputs</h2>
-<dl class="message-properties">
-
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
-
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
-    
-</dl>
+<h2 data-type="outputs">Outputs</h2>
+<p>
+    This node does not have any outputs. If the execute-function operation is successful, it simply forwards the message.
+</p>
