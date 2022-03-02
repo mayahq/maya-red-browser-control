@@ -445,44 +445,25 @@
                 <li><b>keyup</b> - simulate releasing a key on the page</li>
             </ul>
 
-            <h3>If action is "type"</h3> -
+            <h3>If action is "type"</h3>
             <ul>
                 <li><b>Text</b> - The text to type</li>
+                <li><b>Keypress delay</b> - the delay to simulate between each key-press during typing</li>
+                <li><b>Xpath</b> - the xpath of the input field to type into</li>
+                <li><b>Timeout</b> Time (in milliseconds) for which the node will wait for the target input field (as specified by the xpath) to appear on the page, if it isn't already there</li>
+                <li><b>Element index</b> - If multiple elements correspond to the given xpath, this is the index of the desired element</li>
             </ul>
-        </dd>
 
-        <dt>
-            <span class="property-name">Input Xpath</span>
-            <span class="property-type">string</span>
-        </dt>
-        <dd>
-            The xpath of the target input field
-        </dd>
+            <h3>If action is "keypress"</h3>
+            <ul>
+                <li><b>Key name</b> - the name of the key to be pressed. You can get the key name of any key <a href="https://keycode.info/">here</a></li>
+                <li><b>Delay</b> - the delay (in milliseconds) between pressing the key and releasing it</li>
+            </ul>
 
-        <dt>
-            <span class="property-name">Index</span>
-            <span class="property-type">int</span>
-        </dt>
-        <dd>
-            If multiple elements correspond to the given xpath, this is the index of the
-            desired element
-        </dd>
-
-        <dt>
-            <span class="property-name">Timeout</span>
-            <span class="property-type">int</span>
-        </dt>
-        <dd>
-            Time (in milliseconds) for which the node will wait for the target input field (
-            as specified by the xpath) to appear on the page, if it isn't already there
-        </dd>
-
-        <dt>
-            <span class="property-name">File path</span>
-            <span class="property-type">string</span>
-        </dt>
-        <dd>
-            Absolute path of the file to be uploaded
+            <h3>If action is "keyup" or "keydown"</h3>
+            <ul>
+                <li><b>Key Name</b> - the name of the key to be pressed. You can get the key name of any key <a href="https://keycode.info/">here</a></li>
+            </ul>
         </dd>
     </dl>
 
