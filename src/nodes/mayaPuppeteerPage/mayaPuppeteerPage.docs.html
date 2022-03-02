@@ -1,19 +1,80 @@
 <h2 data-type="description-title">Description</h2>
-<p data-type="description-summary">Disconnect from Maya's browser instance</p>
-
-<p>
-    All flows that perform browser automation using this module, must end with the Disconnect node.
-    If this is not ensured, Maya will keep running the browser process, which will consume system 
-    resources unnecessarily.
-</p>
+<p data-type="description-summary">Navigate to a URL, take a screenshot or generate a PDF from the page</p>
 
 <h2 data-type="inputs">Inputs</h2>
-<p>
-    This node has no input properties, but it is triggered only upon receiving a message.
-</p>
+<dl class="message-properties">
+
+    <dt>
+        <span class="property-name">Page ID</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The pageId of the page on which the action is to be performed
+    </dd>
+
+    <dt>
+        <span class="property-name">actionType</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The type of action to be performed - "navigate", "generatePDF" or "screenshot", where each corresponds to 
+        their obvious meanings
+    </dd>
+
+
+    <h3>If actionType is "navigate"</h3> - 
+    <ul>
+        <li><b>URL</b> - The URL to navigate to</li>
+        <li>
+            <b>waitUntil</b> - how long the node should wait before forwarding the message to the next node.
+            What these options mean - 
+            <ul>
+                <li><b>load</b> - consider navigation to be finished when the load event is fired.</li>
+                <li><b>domcontentloaded</b> - consider navigation to be finished when the DOMContentLoaded event is fired.</li>
+                <li><b>networkidle0</b> - consider navigation to be finished when there are no more than 0 network connections for at least 500 ms.</li>
+                <li><b>networkidle2</b> - consider navigation to be finished when there are no more than 2 network connections for at least 500 ms.</li>
+            </ul>
+        </li>
+        <li><b>viewport</b> - if "default", the new page will open in 1600x900 dimensions. If "custom", you can specify your own dimensions</li>
+    </ul>
+
+    <h3>If actionType is "generatePDF"</h3> - 
+    <p>
+        This action only works if the browser is opened in headless mode.
+    </p>
+    <ul>
+        <li><b>Ouput file path</b> - the file path that the PDF should be saved to</li>
+        <li><b>Scale</b> - the scale of the page at which the PDF should be generated</li>
+        <li><b>Header HTML</b> - custom HTML header (if any) that the PDF should be given</li>
+        <li><b>Footer HTML</b> - custom HTML footer (if any) that the PDF should be given</li>
+        <li><b>Orientation</b> - landscape or portrait. Obvious meaning</li>
+        <li><b>Page format</b> - the page dimensions of the PDF</li>
+        <li><b>useCustomMargins</b> - if custom margins should be used. If yes, you can specify your margins along with units, like "1cm"</li>
+    </ul>
+
+    <h3>If actionType is "screenshot"</h3> - 
+    <p>
+        This action only works if the browser is opened in headless mode.
+    </p>
+    <ul>
+        <li><b>Ouput file path</b> - the file path that the PDF should be saved to</li>
+        <li><b>Type</b> - the output image format (png, jpeg or webp)</li>
+        <li><b>Quality</b> - image quality on a scale of 1 to 100, 100 being the original. Not supported if type is png.</li>
+        <li>
+            <b>captureArea</b> - what part of the page should be captured
+            What these options mean - 
+            <ul>
+                <li><b>visiblePage</b> - the part of the page that's visible at the moment</li>
+                <li><b>fullScrollablePage</b> - the entire scrollable page (i.e., including the part that is not visible)</li>
+                <li><b>custom</b> - specify the coordinates of the top-left corner of the screenshot area, along with its height and width</li>
+            </ul>
+        </li>
+    </ul>
+
+</dl>
 
 
 <h2 data-type="outputs">Outputs</h2>
 <p>
-    This node does not have any outputs. If the disconnect operation is successful, it simply forwards the message.
+    This node does not have any outputs. If the page operation is successful, it simply forwards the message.
 </p>
