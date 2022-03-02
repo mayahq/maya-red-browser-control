@@ -32,7 +32,7 @@
   },
   "mayaDetails": {
     "name": "maya-red-browser-control",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "Advanced browser automation using Maya",
     "author": "dush-t",
     "type": "git",
