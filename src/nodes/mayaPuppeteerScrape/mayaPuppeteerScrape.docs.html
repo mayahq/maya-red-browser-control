@@ -1,19 +1,47 @@
 <h2 data-type="description-title">Description</h2>
-<p data-type="description-summary">Disconnect from Maya's browser instance</p>
+<p data-type="description-summary">Scrape data from a tab (without necessarily switching to it) using Maya WebQL</p>
+<br>
 
+<h2>Config</h2>
+<dl class="message-properties">
+
+    <dt>
+        <span class="property-name">Page ID</span> 
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The pageId of the page from which you want to scrape
+    </dd>
+
+    <dt>
+        <span class="property-name">query</span>
+        <span class="property-type">JSON</span>
+    </dt>
+    <dd>
+        The Maya WebQL query to execute on the page. Refer to WebQL Documentation to learn more.
+    </dd>
+
+    <dt class="optional">
+        <span class="property-name">Timeout</span> 
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        The maximum amount of time that Maya will wait for each xpath in the query to resolve
+    </dd>
+</dl>
+<br>
+
+
+<h2>Outputs</h2>
 <p>
-    All flows that perform browser automation using this module, must end with the Disconnect node.
-    If this is not ensured, Maya will keep running the browser process, which will consume system 
-    resources unnecessarily.
+    The following properties are set on the <code>msg</code> object in case of successful execution.
 </p>
-
-<h2 data-type="inputs">Inputs</h2>
-<p>
-    This node has no input properties, but it is triggered only upon receiving a message.
-</p>
-
-
-<h2 data-type="outputs">Outputs</h2>
-<p>
-    This node does not have any outputs. If the disconnect operation is successful, it simply forwards the message.
-</p>
+<dl class="message-properties">
+    <dt>
+        <span class="property-name">result</span>
+        <span class="property-type">json</span>
+    </dt>
+    <dd>The result of the scraping operation.</dd>
+    
+</dl>
+<br>
