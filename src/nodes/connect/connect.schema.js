@@ -20,7 +20,7 @@ class Connect extends Node {
 
     static schema = new Schema({
         name: 'connect',
-        label: 'connect',
+        label: 'Connect',
         category: 'Maya Red Browser Control',
         isConfig: false,
         color: nodeColor,

@@ -58,8 +58,8 @@ class PuppeteerControlServer {
             headless: false,
             // userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
             defaultViewport: null,
-            executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-            // channel: 'chromium',
+            // executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+            channel: 'chromium',
             ...opts,
         })
     
