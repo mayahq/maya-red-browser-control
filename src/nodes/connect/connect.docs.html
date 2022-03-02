@@ -1,25 +1,40 @@
-<h2>Description</h2>
-<p>Query opens tabs based on criteria like URL, muted status</p>
+<h2 data-type="description-title">Description</h2>
+<p data-type="description-summary">Connect to Maya's browser instance</p>
 
-<h2>Config</h2>
+<h2 data-type="inputs">Inputs</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
+    <dt>
+        <span class="property-name">connectionType</span>
+        <span class="property-type">enum</span>
+    </dt>
+    <dd>
+        If value is "new", it will start a new browser session on your local machine. If value is "existing", 
+        it will connect to a browser thats already running (this browser could also be running remotely)
+    </dd>
 
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>
+        <span class="property-name">showBrowser</span>
+        <span class="property-type">enum</span>
+    </dt>
+    <dd>
+        If set to "yes", Maya will open the browser in headful mode (i.e., in the foreground -this will 
+        take considerably more system resources). Otherwise, the browser will run in headless mode (i.e. 
+        in the background)
+    </dd>
 
+    <dt>
+        <span class="property-name">WS Link</span>
+        <span class="property-type">enum</span>
+    </dt>
+    <dd>
+        If connectionType is "existing", this field lets you specify the link to the browser you want to 
+        connect to.
+    </dd>
 </dl>
 
 
-<h2>Outputs</h2>
-<dl class="message-properties">
-
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
-
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
-    
-</dl>
+<h2 data-type="outputs">Outputs</h2>
+<p>
+    This node does not have any outputs. If the connect operation is successful, it simply forwards the message.
+</p>
