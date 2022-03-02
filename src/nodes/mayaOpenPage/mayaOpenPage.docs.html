@@ -1,25 +1,50 @@
-<h2>Description</h2>
-<p>Query opens tabs based on criteria like URL, muted status</p>
+<h2 data-type="description-title">Description</h2>
+<p data-type="description-summary">Open a page in a new tab</p>
 
-<h2>Config</h2>
+<h2 data-type="inputs">Inputs</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
+    <dt>
+        <span class="property-name">URL</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>
+        The URL of the page to open
+    </dd>
 
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>
+        <span class="property-name">waitUntil</span>
+        <span class="property-type">enum</span>
+    </dt>
+    <dd>
+        How long the node should wait before forwarding the message to the next node. What these options mean - 
+        <ul>
+            <li><b>load</b> - consider navigation to be finished when the load event is fired.</li>
+            <li><b>domcontentloaded</b> - consider navigation to be finished when the DOMContentLoaded event is fired.</li>
+            <li><b>networkidle0</b> - consider navigation to be finished when there are no more than 0 network connections for at least 500 ms.</li>
+            <li><b>networkidle2</b> - consider navigation to be finished when there are no more than 2 network connections for at least 500 ms.</li>
+        </ul>
+    </dd>
 
+    <dt>
+        <span class="property-name">viewport</span>
+        <span class="property-type">enum</span>
+    </dt>
+    <dd>
+        If set to "default", the browser will open the page with dimensions 1600x900. If set to "custom", you can specify 
+        your own viewport.
+    </dd>
 </dl>
 
 
-<h2>Outputs</h2>
+<h2 data-type="outputs">Outputs</h2>
 <dl class="message-properties">
-
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
-
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
-    
+    <dt>
+        <span class="property-name">pageIds</span>
+        <span class="property-type">array[string]</span>
+    </dt>
+    <dd>
+        Array that contains the newly opened page's pageId as the first element. This array 
+        contains only one element.
+    </dd>
 </dl>
