@@ -418,29 +418,77 @@
 </script>
 
 <script type="text/html" data-help-name="maya-puppeteer-keyboard">
-    <h2>Description</h2>
-    <p>Query opens tabs based on criteria like URL, muted status</p>
+    <h2 data-type="description-title">Description</h2>
+    <p data-type="description-summary">Perform a keyboard action (typing, key-press, key-hold) on a page</p>
 
-    <h2>Config</h2>
+    <h2 data-type="inputs">Inputs</h2>
     <dl class="message-properties">
 
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
+        <dt>
+            <span class="property-name">Page ID</span>
+            <span class="property-type">string</span>
+        </dt>
+        <dd>
+            The pageId of the page that the action is to be performed on
+        </dd>
 
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
+        <dt>
+            <span class="property-name">actionType</span>
+            <span class="property-type">enum</span>
+        </dt>
+        <dd>
+            The keyboard action you want to perform. This can be "type", "keypress", "keydown", "keyup". They mean the following -
+            <ul>
+                <li><b>type</b> - type some text into an input</li>
+                <li><b>keypress</b> - simulate pressing a key on the page</li>
+                <li><b>keydown</b> - simulate holding down a key on the page</li>
+                <li><b>keyup</b> - simulate releasing a key on the page</li>
+            </ul>
 
+            <h3>If action is "type"</h3> -
+            <ul>
+                <li><b>Text</b> - The text to type</li>
+            </ul>
+        </dd>
+
+        <dt>
+            <span class="property-name">Input Xpath</span>
+            <span class="property-type">string</span>
+        </dt>
+        <dd>
+            The xpath of the target input field
+        </dd>
+
+        <dt>
+            <span class="property-name">Index</span>
+            <span class="property-type">int</span>
+        </dt>
+        <dd>
+            If multiple elements correspond to the given xpath, this is the index of the
+            desired element
+        </dd>
+
+        <dt>
+            <span class="property-name">Timeout</span>
+            <span class="property-type">int</span>
+        </dt>
+        <dd>
+            Time (in milliseconds) for which the node will wait for the target input field (
+            as specified by the xpath) to appear on the page, if it isn't already there
+        </dd>
+
+        <dt>
+            <span class="property-name">File path</span>
+            <span class="property-type">string</span>
+        </dt>
+        <dd>
+            Absolute path of the file to be uploaded
+        </dd>
     </dl>
 
 
-    <h2>Outputs</h2>
-    <dl class="message-properties">
-
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
-
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
-
-    </dl>
+    <h2 data-type="outputs">Outputs</h2>
+    <p>
+        This node does not have any outputs. If the input operation is successful, it simply forwards the message.
+    </p>
 </script>

@@ -476,29 +476,23 @@
 </script>
 
 <script type="text/html" data-help-name="maya-puppeteer-mouse">
-    <h2>Description</h2>
-    <p>Query opens tabs based on criteria like URL, muted status</p>
+    <h2 data-type="description-title">Description</h2>
+    <p data-type="description-summary">Disconnect from Maya's browser instance</p>
 
-    <h2>Config</h2>
-    <dl class="message-properties">
+    <p>
+        All flows that perform browser automation using this module, must end with the Disconnect node.
+        If this is not ensured, Maya will keep running the browser process, which will consume system
+        resources unnecessarily.
+    </p>
 
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
-
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
-
-    </dl>
+    <h2 data-type="inputs">Inputs</h2>
+    <p>
+        This node has no input properties, but it is triggered only upon receiving a message.
+    </p>
 
 
-    <h2>Outputs</h2>
-    <dl class="message-properties">
-
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
-
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
-
-    </dl>
+    <h2 data-type="outputs">Outputs</h2>
+    <p>
+        This node does not have any outputs. If the disconnect operation is successful, it simply forwards the message.
+    </p>
 </script>
