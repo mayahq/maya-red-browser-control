@@ -54,6 +54,7 @@ class PuppeteerControlServer {
     }
 
     async _startBrowser(opts = {}) {
+        console.log('######## WE STARTING', opts)
         const browser = await puppeteer.launch({
             headless: false,
             // userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
