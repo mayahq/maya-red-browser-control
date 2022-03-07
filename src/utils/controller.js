@@ -11,6 +11,7 @@ const KILL_TIMEOUT = 10 * 1000 // 5 minutes
 class PuppeteerControlServer {
     constructor() {
         const mayaFolder = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
+        this.mayaFolder = mayaFolder
 
         this.ipc = new IPCModule()
         this.ipc.config.silent = true
@@ -176,7 +177,7 @@ class PuppeteerControlServer {
 
 
     startServer() {
-        this.ipc.serve(path.join(os.homedir(), '.mayadev/pupsock'), () => {
+        this.ipc.serve(path.join(os.homedir(), `${this.mayaFolder}/pupsock`), () => {
             const server = this.ipc.server
 
             server.on('maya::browser_start', (data, socket) => {
