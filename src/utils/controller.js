@@ -10,6 +10,8 @@ const KILL_TIMEOUT = 5 * 60 * 1000 // 10 seconds
 const MINUTE = 60*1000
 
 class PuppeteerControlServer {
+    static version = 1
+
     constructor() {
         const mayaFolder = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
         this.mayaFolder = mayaFolder
@@ -243,7 +245,14 @@ class PuppeteerControlServer {
                 server.emit(socket, `maya::controller_kill::${id}`, {
                     status: 'KILLED'
                 })
-                setTimeout(() => process.exit(0), 2000)
+                setTimeout(() => process.exit(0), 500)
+            })
+
+            server.on('maya::controller_version', (data, socket) => {
+                const { id } = data
+                server.emit(socket, `maya::controller_version::${id}`, {
+                    version: PuppeteerControlServer.version
+                })
             })
         })
 

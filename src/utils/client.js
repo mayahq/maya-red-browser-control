@@ -8,6 +8,8 @@ const BROWSER_START_STOP_TIMEOUT = 60 * 1000
 const SERVER_HEARTBEAT_DURATION = 30 * 1000
 
 class LocalInstanceControl {
+    static version = 1
+
     constructor() {
         const mayaDir = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
         this.sockpath = path.join(os.homedir(), `${mayaDir}/pupsock`)
@@ -20,14 +22,26 @@ class LocalInstanceControl {
             const testIPC = new IPCModule()
             testIPC.config.silent = true
             testIPC.config.stopRetrying = 1
+            
+            const id = (Math.random() * 100000000).toString()
+            const versionCheckMessage = {
+                id: id,
+                type: 'maya::controller_version'
+            }
 
+            const tm = setTimeout(() => resolve({ running: false }), 3000)
             testIPC.connectTo(
                 'ping',
                 this.sockpath,
                 () => {
-                    testIPC.of.ping.on('connect', () => {
+                    testIPC.of.ping.on(`maya::controller_version::${id}`, (msg) => {
                         testIPC.disconnect('ping')
-                        resolve(true)
+                        clearTimeout(tm)
+                        resolve({ running: true, version: msg.version })
+                    })
+
+                    testIPC.of.ping.on('connect', () => {
+                        testIPC.of.ping.emit('maya::controller_version', versionCheckMessage)
                     })
 
                     testIPC.of.ping.on('error', (e) => {
@@ -35,7 +49,8 @@ class LocalInstanceControl {
                             testIPC.disconnect('ping')
                         } catch (e) {}
                         testIPC.config.stopRetrying = true
-                        resolve(false)
+                        clearTimeout(tm)
+                        resolve({ running: false })
                     })
                 }
             )
@@ -66,13 +81,42 @@ class LocalInstanceControl {
         })
     }
 
+    getServerVersion() {
+        return new Promise((resolve, reject) => {
+            try {
+                const id = (Math.random() * 100000000).toString()
+                const versionCheckMessage = {
+                    id: id,
+                    type: 'maya::controller_version'
+                }
+
+                const tm = setTimeout(() => resolve(-1), 3000)
+                this.ipc.of.mayaBrowserControl.once(`maya::controller_version::${id}`, () => {
+                    resolve(msg.version)
+                    clearTimeout(tm)
+                })
+                this.ipc.of.mayaBrowserControl.emit('maya::controller_version', versionCheckMessage)
+            } catch (e) {
+                resolve(-1)
+            }
+        })
+    }
+
     async init() {
-        const running = await this._isServerRunning()
+        const { running, version } = await this._isServerRunning()
         if (!running) {
             console.log('Server not running, so starting')
             await this._startServer()
         }
-        
+
+        // If control server is an older version, kill it and start
+        // a newer one
+        if (version < LocalInstanceControl.version) {
+            await this.killController()
+            await new Promise(res => setTimeout(res, 1000))
+            await this._startServer()
+        }
+
         const ipcMod = new IPCModule()
         ipcMod.config.silent = true
         this.ipc = ipcMod
@@ -102,22 +146,34 @@ class LocalInstanceControl {
     }
 
     async killController() {
-        const running = await this._isServerRunning()
+        const { running } = await this._isServerRunning()
         if (!running) {
             return
         }
 
+        const killIPC = new IPCModule()
+        
         await new Promise((resolve, reject) => {
-            const id = (Math.random() * 100000000).toString()
-            this.ipc.of.mayaBrowserControl.once(`maya::controller_kill::${id}`, (msg) => {
-                if (msg.status === 'KILLED') {
-                    console.log('Controller process killed')
-                } else {
-                    console.log('Error killing controller process')
+            killIPC.connectTo(
+                'kill',
+                this.sockpath,
+                () => {
+                    killIPC.of.kill.on('connect', () => {
+                        const id = (Math.random() * 100000000).toString()
+                        killIPC.of.kill.once(`maya::controller_kill::${id}`, (msg) => {
+                            if (msg.status === 'KILLED') {
+                                console.log('Controller process killed')
+                            } else {
+                                console.log('Error killing controller process')
+                            }
+                            resolve()
+                        })
+                        killIPC.of.kill.emit('maya::controller_kill', { id })
+                    })
+
+                    killIPC.of.kill.on('error', (e) => reject(e))
                 }
-                resolve()
-            })
-            this.ipc.of.mayaBrowserControl.emit('maya::controller_kill', { id })
+            )
         })
 
         return
@@ -205,7 +261,7 @@ class LocalInstanceControl {
     }
 }
 
-// const lic = new LocalInstanceControl()
+const lic = new LocalInstanceControl()
 // lic.init()
 //     .then(async () => {
 //         // await lic.killController()

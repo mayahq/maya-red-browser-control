@@ -20,7 +20,7 @@ class MayaBrowserControlDisconnect extends Node {
         category: 'Maya Red Browser Control',
         isConfig: false,
         fields: {
-            force: new fields.Select({ options: ['no', 'yes'], displayName: 'Force disconnection' })
+            force: new fields.Select({ options: ['no', 'yes'], displayName: 'Force' })
         },
         icon: 'font-awesome/fa-chrome',
         color: nodeColor,

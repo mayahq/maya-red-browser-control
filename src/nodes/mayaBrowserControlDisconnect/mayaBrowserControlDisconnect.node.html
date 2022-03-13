@@ -9,6 +9,9 @@
             isProfileConfigNode: {
                 value: false
             },
+            force: {
+                value: "no"
+            },
         },
         inputs: 1,
         outputs: 1,
@@ -18,7 +21,14 @@
         },
         paletteLabel: "Disconnect",
         exportable: true,
-        oneditprepare: function() {},
+        oneditprepare: function() {
+            const forceselectFieldValues = ["no", "yes"]
+            forceselectFieldValues.forEach((val) => {
+                $("#node-input-force").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-force").val(this.force)
+
+        },
         oneditsave: function() {},
         oneditcancel: function() {},
         oneditdelete: function() {},
@@ -32,6 +42,11 @@
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-force">Force</label>
+        <select type="text" id="node-input-force">
+        </select>
     </div>
 </script>
 
