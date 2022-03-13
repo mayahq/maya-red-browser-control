@@ -1,6 +1,7 @@
 const {
     Node,
-    Schema
+    Schema,
+    fields
 } = require('@mayahq/module-sdk')
 const { nodeColor } = require('../../constants')
 const LocalInstanceControl = require('../../utils/client')
@@ -18,7 +19,9 @@ class MayaBrowserControlDisconnect extends Node {
         label: 'Disconnect',
         category: 'Maya Red Browser Control',
         isConfig: false,
-        fields: {},
+        fields: {
+            force: new fields.Select({ options: ['no', 'yes'], displayName: 'Force disconnection' })
+        },
         icon: 'font-awesome/fa-chrome',
         color: nodeColor,
         icon: 'chrome.png'
@@ -28,7 +31,9 @@ class MayaBrowserControlDisconnect extends Node {
 
     async onMessage(msg, vals) {
         const connectionId = msg._connectionId
-        if (!connectionId) {
+        const force = vals.force === 'yes'
+
+        if (!connectionId && !force) {
             console.log('No connection ID provided! Cannot close')
             this.setStatus('ERROR', 'No connection ID provided')
             msg.__error = new Error('No connection ID provided')
@@ -38,15 +43,17 @@ class MayaBrowserControlDisconnect extends Node {
 
         // Disconnecting the browser object from debug websocket of
         // the actual chromium process
-        const context = this._node.context()
-        const browser = context.flow.get(`_browser::${msg._msgid}`)
-        await browser.disconnect()
+        if (!force) {
+            const context = this._node.context()
+            const browser = context.flow.get(`_browser::${msg._msgid}`)
+            await browser.disconnect()
+        }
 
         // Telling the browser manager that we're done now
         const browserClient = new LocalInstanceControl()
         await browserClient.init()
         try {
-            await browserClient.stopBrowser({ connectionId })
+            await browserClient.stopBrowser({ connectionId, force })
             delete msg['_browser']
             delete msg['_connectionId']
         } catch (e) {

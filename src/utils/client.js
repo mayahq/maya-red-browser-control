@@ -158,12 +158,15 @@ class LocalInstanceControl {
         })
     }
 
-    stopBrowser({ connectionId }, timeout = BROWSER_START_STOP_TIMEOUT) {
+    stopBrowser({ connectionId, force }, timeout = BROWSER_START_STOP_TIMEOUT) {
         return new Promise((resolve, reject) => {
             const id = (Math.random() * 100000000).toString()
             const browserStopMessage = {
                 id: id,
                 connectionId: connectionId,
+                payload: {
+                    force
+                },
                 type: 'maya::browser_stop'
             }
             this.ipc.of.mayaBrowserControl.emit('maya::browser_stop', browserStopMessage)

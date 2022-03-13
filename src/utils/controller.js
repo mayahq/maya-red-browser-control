@@ -6,7 +6,8 @@ const { IPCModule } = require('node-ipc')
 const { localDb } = require('@mayahq/maya-db')
 
 // const KILL_TIMEOUT = 5 * 60 * 1000 // 5 minutes
-const KILL_TIMEOUT = 10 * 1000 // 5 minutes
+const KILL_TIMEOUT = 5 * 60 * 1000 // 10 seconds
+const MINUTE = 60*1000
 
 class PuppeteerControlServer {
     constructor() {
@@ -26,16 +27,16 @@ class PuppeteerControlServer {
 
         setInterval(() => {
             this._checkIntegrity()
-        }, (KILL_TIMEOUT/2))
+        }, (10 * 1000))
     }
 
     async _checkIntegrity() {
         const connBlock = this.db.block('connections')
         await connBlock.acquireLock(async () => {
             const { killAt } = await connBlock.get({
+                connections: [],
                 killAt: -1
             })
-            // console.log('Checking integrity. KillAt =', killAt)
 
             if (killAt < 0) {
                 return
@@ -43,13 +44,26 @@ class PuppeteerControlServer {
                 if (Date.now() - killAt > 0) {
                     console.log('Actually killing browser process')
                     await this._stopBrowser()
-                    connBlock.update({
+                    return await connBlock.update({
                         wsEndpoint: { $set: '' },
                         connections: { $set: [] },
                         killAt: { $set: -1 }
                     })
                 }
             }
+
+            // Remove all connections more than 10 minutes old
+            const now = Date.now()
+            const newConnections = connections.filter(c => now - c.created < 10 * MINUTE)
+            const updates = {
+                connections: { $set: newConnections }
+            }
+            if (newConnections.length === 0) {
+                this._stopBrowser()
+                updates.killAt = { $set: now - 1 }
+                updates.wsEndpoint = { $set: '' }
+            }
+            await connBlock.update(updates)
         })
 
     }
@@ -141,6 +155,14 @@ class PuppeteerControlServer {
         const connStore = this.db.block('connections')
 
         await connStore.acquireLock(async () => {
+            if (opts.force) {
+                await this._stopBrowser()
+                return await connStore.update({
+                    connections: { $set: [] },
+                    killAt: { $set: -1 }
+                })
+            }
+
             const result = await connStore.get({
                 connections: [],
                 wsEndpoint: ''
