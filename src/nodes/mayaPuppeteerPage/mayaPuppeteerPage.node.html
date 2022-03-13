@@ -554,7 +554,7 @@
             })
 
 
-            const actionTypeFieldSetNames = ["navigate", "generatePDF", "screenshot", "setViewport"]
+            const actionTypeFieldSetNames = ["navigate", "close", "generatePDF", "screenshot", "setViewport"]
             actionTypeFieldSetNames.forEach((fieldSetName) => {
                 $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
             })
@@ -724,6 +724,10 @@
                 <input type="hidden" id="node-input-payloadTypevheight">
             </div>
         </div>
+    </div>
+
+    <div id="fieldset-close" style="padding-left: 10px;">
+
     </div>
 
     <div id="fieldset-generatePDF" style="padding-left: 10px;">

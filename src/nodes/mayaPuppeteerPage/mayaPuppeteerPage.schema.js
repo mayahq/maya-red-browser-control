@@ -53,6 +53,8 @@ class MayaPuppeteerPage extends Node {
                         })
                     },
 
+                    close: {},
+
                     generatePDF: {
                         pdfDestinationPath: new fields.Typed({ 
                             type: 'str', allowedTypes: DATStr, displayName: 'Ouput file path', defaultVal: '/absolute/path/to/output/file' 
@@ -151,6 +153,11 @@ class MayaPuppeteerPage extends Node {
                 }
                 await page.goto(url, { waitUntil })
                 this.setStatus('SUCCESS', `Navigated to ${url}`)
+                return msg
+            }
+
+            case 'navigate': {
+                await page.close()
                 return msg
             }
 
