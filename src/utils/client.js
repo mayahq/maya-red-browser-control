@@ -8,7 +8,7 @@ const BROWSER_START_STOP_TIMEOUT = 60 * 1000
 const SERVER_HEARTBEAT_DURATION = 30 * 1000
 
 class LocalInstanceControl {
-    static version = 1
+    static version = 2
 
     constructor() {
         const mayaDir = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
@@ -111,7 +111,7 @@ class LocalInstanceControl {
 
         // If control server is an older version, kill it and start
         // a newer one
-        if (version < LocalInstanceControl.version) {
+        if (version < LocalInstanceControl.version || version === undefined) {
             await this.killController()
             await new Promise(res => setTimeout(res, 1000))
             await this._startServer()
