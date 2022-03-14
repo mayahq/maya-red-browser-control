@@ -32,6 +32,7 @@ class MayaBrowserControlDisconnect extends Node {
     async onMessage(msg, vals) {
         const connectionId = msg._connectionId
         const force = vals.force === 'yes'
+        const context = this._node.context()
 
         if (!connectionId && !force) {
             console.log('No connection ID provided! Cannot close')
@@ -44,7 +45,6 @@ class MayaBrowserControlDisconnect extends Node {
         // Disconnecting the browser object from debug websocket of
         // the actual chromium process
         if (!force) {
-            const context = this._node.context()
             const browser = context.flow.get(`_browser::${msg._msgid}`)
             await browser.disconnect()
         }

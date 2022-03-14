@@ -71,7 +71,6 @@ class PuppeteerControlServer {
     }
 
     async _startBrowser(opts = {}) {
-        console.log('######## WE STARTING', opts)
         const browser = await puppeteer.launch({
             headless: false,
             // userDataDir: '/Users/dushyant/Library/Application Support/Google/Chrome',
@@ -117,7 +116,8 @@ class PuppeteerControlServer {
         const wsEndpoint = await connStore.acquireLock(async () => {
             const result = await connStore.get({
                 connections: [],
-                wsEndpoint: ''
+                wsEndpoint: '',
+                headless: false
             })
             const connections = [...result.connections]
             connections.push({
@@ -143,7 +143,8 @@ class PuppeteerControlServer {
             await connStore.update({ 
                 connections: { $set: connections },
                 wsEndpoint: { $set: wsEndpoint },
-                killAt: { $set: -1 }
+                killAt: { $set: -1 },
+                headless: { $set: opts.headless }
             })
             return wsEndpoint
         })
@@ -157,18 +158,19 @@ class PuppeteerControlServer {
         const connStore = this.db.block('connections')
 
         await connStore.acquireLock(async () => {
-            if (opts.force) {
+            const result = await connStore.get({
+                connections: [],
+                wsEndpoint: '',
+                headless: false
+            })
+
+            if (opts.force || !result.headless) {
                 await this._stopBrowser()
                 return await connStore.update({
                     connections: { $set: [] },
                     killAt: { $set: -1 }
                 })
             }
-
-            const result = await connStore.get({
-                connections: [],
-                wsEndpoint: ''
-            })
 
             // If no connection with given ID found, nothing to be done.
             const connections = [...result.connections]

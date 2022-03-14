@@ -29,7 +29,7 @@ class Connect extends Node {
             connectionType: new fields.SelectFieldSet({
                 fieldSets: {
                     new: {
-                        headless: new fields.Select({ options: ['yes', 'no'], displayName: 'Show browser', defaultVal: 'no' })
+                        showBrowser: new fields.Select({ options: ['yes', 'no'], displayName: 'Show browser', defaultVal: 'no' })
                     },
                     existing: {
                         link: new fields.Typed({ type: 'str', allowedTypes: ['str', 'msg', 'global', 'flow'], displayName: 'WS link' })
@@ -53,10 +53,10 @@ class Connect extends Node {
         if (connectionType === 'new') {
             const browserClient = new LocalInstanceControl()
             await browserClient.init()
-            const { headless } = vals.connectionType.childValues
+            const { showBrowser } = vals.connectionType.childValues
             try {
                 const { connectionId, details } = await browserClient.startBrowser({
-                    headless: headless === 'no', // I know. Too lazy to fix.
+                    headless: showBrowser === 'no', // I know. Too lazy to fix.
                     defaultViewport: null
                 })
                 browser = await puppeteer.connect({
