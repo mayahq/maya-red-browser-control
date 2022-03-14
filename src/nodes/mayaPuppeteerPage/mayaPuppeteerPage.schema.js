@@ -156,7 +156,7 @@ class MayaPuppeteerPage extends Node {
                 return msg
             }
 
-            case 'navigate': {
+            case 'close': {
                 await page.close()
                 return msg
             }
