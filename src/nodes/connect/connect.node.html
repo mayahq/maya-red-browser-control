@@ -9,7 +9,7 @@
             isProfileConfigNode: {
                 value: false
             },
-            headless: {
+            showBrowser: {
                 value: "no"
             },
             link: {
@@ -31,11 +31,11 @@
         paletteLabel: "Connect",
         exportable: true,
         oneditprepare: function() {
-            const headlessselectFieldValues = ["yes", "no"]
-            headlessselectFieldValues.forEach((val) => {
-                $("#node-input-headless").append($("<option></option>").attr("value", val).text(val))
+            const showBrowserselectFieldValues = ["yes", "no"]
+            showBrowserselectFieldValues.forEach((val) => {
+                $("#node-input-showBrowser").append($("<option></option>").attr("value", val).text(val))
             })
-            $("#node-input-headless").val(this.headless)
+            $("#node-input-showBrowser").val(this.showBrowser)
 
             if (this.payloadTypelink === null) {
                 if (this.link === "") {
@@ -95,8 +95,8 @@
     </div>
     <div id="fieldset-new" style="padding-left: 10px;">
         <div class="form-row">
-            <label for="node-input-headless">Show browser</label>
-            <select type="text" id="node-input-headless">
+            <label for="node-input-showBrowser">Show browser</label>
+            <select type="text" id="node-input-showBrowser">
             </select>
         </div>
     </div>
