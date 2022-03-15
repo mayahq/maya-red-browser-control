@@ -1,6 +1,5 @@
 const os = require('os')
 const path = require('path')
-const chromeLauncher = require('chrome-launcher')
 const puppeteer = require('puppeteer-core')
 const { IPCModule } = require('node-ipc')
 const { localDb } = require('@mayahq/maya-db')
@@ -278,3 +277,5 @@ process.on('message', async (msg) => {
         default: return
     }
 })
+
+module.exports = PuppeteerControlServer

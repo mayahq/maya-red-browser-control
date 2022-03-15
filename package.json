@@ -48,9 +48,11 @@
   },
   "dependencies": {
     "@mayahq/maya-db": "^0.0.4",
-    "@mayahq/module-sdk": "^0.4.11",
+    "@mayahq/module-sdk": "^1.0.3",
     "axios": "^0.21.4",
     "chrome-launcher": "^0.15.0",
+    "express": "^4.17.3",
+    "find-free-port": "^2.0.0",
     "jsonata": "^1.8.6",
     "node-ipc": "^10.1.0",
     "puppeteer-core": "^13.3.1"

@@ -261,17 +261,17 @@ class LocalInstanceControl {
     }
 }
 
-// const lic = new LocalInstanceControl()
-// lic.init()
-//     .then(async () => {
-//         await lic.killController()
-//         process.exit(0)
-//         return
+const lic = new LocalInstanceControl()
+lic.init()
+    .then(async () => {
+        await lic.killController()
+        process.exit(0)
+        return
 
-//         const {connectionId} = await lic.startBrowser({ headless: false })
-//         setTimeout(async () => {
-//             await lic.stopBrowser({ connectionId })
-//         }, 7000)
-//     })
+        const {connectionId} = await lic.startBrowser({ headless: false })
+        setTimeout(async () => {
+            await lic.stopBrowser({ connectionId })
+        }, 7000)
+    })
 
 module.exports = LocalInstanceControl
