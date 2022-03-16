@@ -69,7 +69,7 @@ class MayaPuppeteerMouse extends Node {
     async handleClick({ msg, xpath, timeout, pageId, index }) {
         try {
             const context = this._node.context()
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
     
             const page = pages[pageId]
             let elements
@@ -103,7 +103,7 @@ class MayaPuppeteerMouse extends Node {
         console.log('Starting hover')
         try {
             const context = this._node.context()
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
     
             const page = pages[pageId]
             let elements
@@ -143,7 +143,7 @@ class MayaPuppeteerMouse extends Node {
     }) {
         try {
             const context = this._node.context()
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
             const page = pages[pageId]
     
             let elements

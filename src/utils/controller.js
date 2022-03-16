@@ -4,8 +4,8 @@ const puppeteer = require('puppeteer-core')
 const { IPCModule } = require('node-ipc')
 const { localDb } = require('@mayahq/maya-db')
 
-// const KILL_TIMEOUT = 5 * 60 * 1000 // 5 minutes
-const KILL_TIMEOUT = 5 * 60 * 1000 // 10 seconds
+const KILL_TIMEOUT = 10 * 1000 // 10 seconds
+// const KILL_TIMEOUT = 5 * 60 * 1000 // 10 seconds
 const MINUTE = 60*1000
 
 class PuppeteerControlServer {
@@ -28,15 +28,16 @@ class PuppeteerControlServer {
 
         setInterval(() => {
             this._checkIntegrity()
-        }, (10 * 1000))
+        }, (5 * 1000))
     }
 
     async _checkIntegrity() {
+        // console.log('Checking integrity')
         const connBlock = this.db.block('connections')
         await connBlock.acquireLock(async () => {
-            const { killAt } = await connBlock.get({
+            const { killAt, connections } = await connBlock.get({
                 connections: [],
-                killAt: -1
+                killAt: -2
             })
 
             if (killAt < 0) {
@@ -44,11 +45,12 @@ class PuppeteerControlServer {
             } else {
                 if (Date.now() - killAt > 0) {
                     console.log('Actually killing browser process')
+                    console.log('Stopped browser', Date.now())
                     await this._stopBrowser()
                     return await connBlock.update({
                         wsEndpoint: { $set: '' },
                         connections: { $set: [] },
-                        killAt: { $set: -1 }
+                        killAt: { $set: -3 }
                     })
                 }
             }
@@ -58,11 +60,6 @@ class PuppeteerControlServer {
             const newConnections = connections.filter(c => now - c.created < 10 * MINUTE)
             const updates = {
                 connections: { $set: newConnections }
-            }
-            if (newConnections.length === 0) {
-                this._stopBrowser()
-                updates.killAt = { $set: now - 1 }
-                updates.wsEndpoint = { $set: '' }
             }
             await connBlock.update(updates)
         })
@@ -85,16 +82,17 @@ class PuppeteerControlServer {
     }
 
     async _stopBrowser() {
-        try {
-            const browser = await puppeteer.connect({
-                browserWSEndpoint: this.browserEndpoint
-            })
-            await browser.close()
-            return true
-        } catch (e) {
-            console.log('Browser not running on given endpoint')
-            return false
-        }
+        const browser = await puppeteer.connect({
+            browserWSEndpoint: this.browserEndpoint
+        })
+        await browser.close()
+        return true
+
+        // try {
+        // } catch (e) {
+        //     console.log('Browser not running on given endpoint')
+        //     return false
+        // }
     }
 
     async _browserRunning(endpoint) {
@@ -131,7 +129,7 @@ class PuppeteerControlServer {
                 console.log(connectionId, 'Browser already running')
                 await connStore.update({
                     connections: { $set: connections },
-                    killAt: { $set: -1 }
+                    killAt: { $set: -3 }
                 })
                 return result.wsEndpoint
             }
@@ -142,7 +140,7 @@ class PuppeteerControlServer {
             await connStore.update({ 
                 connections: { $set: connections },
                 wsEndpoint: { $set: wsEndpoint },
-                killAt: { $set: -1 },
+                killAt: { $set: -4 },
                 headless: { $set: opts.headless }
             })
             return wsEndpoint
@@ -153,7 +151,7 @@ class PuppeteerControlServer {
     }
 
     async disconnect(connectionId, opts) {
-        console.log(connectionId, 'Got disconnection command')
+        console.log(connectionId, 'Got disconnection command', Date.now())
         const connStore = this.db.block('connections')
 
         await connStore.acquireLock(async () => {
@@ -167,7 +165,7 @@ class PuppeteerControlServer {
                 await this._stopBrowser()
                 return await connStore.update({
                     connections: { $set: [] },
-                    killAt: { $set: -1 }
+                    killAt: { $set: -5 }
                 })
             }
 
@@ -199,83 +197,6 @@ class PuppeteerControlServer {
             return
         })
     }
-
-
-    startServer() {
-        this.ipc.serve(path.join(os.homedir(), `${this.mayaFolder}/pupsock`), () => {
-            const server = this.ipc.server
-
-            server.on('maya::browser_start', (data, socket) => {
-                const { id, payload = {} } = data
-                this.connect(id, payload)
-                    .then((wsEndpoint) => {
-                        this.wsEndpoint = wsEndpoint
-                        server.emit(socket, `maya::browser_start::${id}`, {
-                            status: 'STARTED',
-                            wsEndpoint: wsEndpoint
-                        })
-                    })
-                    .catch((e) => {
-                        console.log('error', e)
-                        server.emit(socket, `maya::browser_start::${id}`, {
-                            status: 'ERROR',
-                            error: e
-                        })
-                    })
-            })
-
-            server.on('maya::browser_stop', (data, socket) => {
-                const { id, connectionId, payload } = data
-                this.disconnect(connectionId, payload)
-                    .then(() => {
-                        this.wsEndpoint = ''
-                        server.emit(socket, `maya::browser_stop::${id}`, {
-                            status: 'STOPPED'
-                        })
-                    })
-                    .catch((e) => {
-                        server.emit(socket, `maya::browser_stop::${id}`, {
-                            status: 'ERROR',
-                            error: e
-                        })
-                    })
-            })
-
-            server.on('maya::controller_kill', (data, socket) => {
-                const { id } = data
-                server.emit(socket, `maya::controller_kill::${id}`, {
-                    status: 'KILLED'
-                })
-                setTimeout(() => process.exit(0), 500)
-            })
-
-            server.on('maya::controller_version', (data, socket) => {
-                const { id } = data
-                server.emit(socket, `maya::controller_version::${id}`, {
-                    version: PuppeteerControlServer.version
-                })
-            })
-        })
-
-        this.ipc.server.start()
-    }
 }
-
-process.on('message', async (msg) => {
-    console.log('Message from starting client:', msg)
-    switch (msg.type) {
-        case 'START_CONTROLLER': {
-            const pcs = new PuppeteerControlServer()
-            pcs.startServer()
-            return process.send({
-                type: 'CONTROLLER_STARTED'
-            })
-        }
-        case 'STOP_CONTROLLER': {
-            process.exit()
-        }
-        default: return
-    }
-})
 
 module.exports = PuppeteerControlServer

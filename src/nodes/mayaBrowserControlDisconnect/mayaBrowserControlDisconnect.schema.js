@@ -45,13 +45,13 @@ class MayaBrowserControlDisconnect extends Node {
         // Disconnecting the browser object from debug websocket of
         // the actual chromium process
         if (!force) {
-            const browser = context.flow.get(`_browser::${msg._msgid}`)
+            const browser = context.global.get(`_browser::${msg._connectionId}`)
             await browser.disconnect()
         }
 
         // Telling the browser manager that we're done now
         const browserClient = new LocalInstanceControl()
-        await browserClient.init()
+        // await browserClient.init()
         try {
             await browserClient.stopBrowser({ connectionId, force })
             delete msg['_browser']
@@ -61,12 +61,11 @@ class MayaBrowserControlDisconnect extends Node {
             msg.__error = e
             msg.__isError = true
         }
-        await browserClient.disconnectFromController()
 
         // Removing browser object from flow context
-        context.flow.set([
-            `_browser::${msg._msgid}`, 
-            `_pages::${msg._msgid}`
+        context.global.set([
+            `_browser::${msg._connectionId}`, 
+            `_pages::${msg._connectionId}`
         ], [
             undefined, 
             undefined

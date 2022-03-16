@@ -57,7 +57,7 @@ class MayaOpenPage extends Node {
         /**
          * @type {puppeteer.Browser}
          */
-        const browser = context.flow.get(`_browser::${msg._msgid}`)
+        const browser = context.global.get(`_browser::${msg._connectionId}`)
         
         if (!browser) {
             this.setStatus('ERROR', 'No connect node at flow beginning')
@@ -77,10 +77,10 @@ class MayaOpenPage extends Node {
             waitUntil: vals.waitUntil
         })
         
-        const pages = context.flow.get(`_pages::${msg._msgid}`)
+        const pages = context.global.get(`_pages::${msg._connectionId}`)
         const pageId = pages.length
         const newPages = [...pages].concat(page)
-        context.flow.set(`_pages::${msg._msgid}`, newPages)
+        context.global.set(`_pages::${msg._connectionId}`, newPages)
 
         msg.pageIds = [pageId]
         return msg

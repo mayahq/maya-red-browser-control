@@ -45,7 +45,7 @@ class MayaPuppeteerExecuteFunction extends Node {
         try {
             const context = this._node.context()
             const { pageId, xpath, timeout, index, funcName, args } = vals
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
 
             console.log('vals', vals)
     

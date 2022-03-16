@@ -59,7 +59,7 @@ class MayaPuppeteerKeyboard extends Node {
 
     async handleType({ msg, text, delay, xpath, timeout, pageId, index }) {
         const context = this._node.context()
-        const pages = context.flow.get(`_pages::${msg._msgid}`)
+        const pages = context.global.get(`_pages::${msg._connectionId}`)
 
         const page = pages[pageId]
         let elements
@@ -86,7 +86,7 @@ class MayaPuppeteerKeyboard extends Node {
     async handleKeypress({ msg, pageId, keyName, delay }) {
         try {
             const context = this._node.context()
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
             const page = pages[pageId]
     
             await page.keyboard.press(keyName, { delay })
@@ -101,7 +101,7 @@ class MayaPuppeteerKeyboard extends Node {
     async handleKeyAction({ msg, pageId, keyName, action }) {
         try {
             const context = this._node.context()
-            const pages = context.flow.get(`_pages::${msg._msgid}`)
+            const pages = context.global.get(`_pages::${msg._connectionId}`)
             const page = pages[pageId]
 
             if (action === 'down') {

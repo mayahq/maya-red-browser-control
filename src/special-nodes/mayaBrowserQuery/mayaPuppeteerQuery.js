@@ -30,7 +30,7 @@ module.exports = function (RED) {
 				query[q["key"]] = [q["xpath"] + q["extract"]];
 			});
 
-			const pages = context.flow.get(`_pages::${msg._msgid}`)
+			const pages = context.global.get(`_pages::${msg._connectionId}`)
 			const pupPage = pages[pageId]
 
 			try {

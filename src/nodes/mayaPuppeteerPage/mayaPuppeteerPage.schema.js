@@ -127,7 +127,7 @@ class MayaPuppeteerPage extends Node {
 
     async onMessage(msg, vals) {
         const context = this._node.context()
-        const pages = context.flow.get(`_pages::${msg._msgid}`)
+        const pages = context.global.get(`_pages::${msg._connectionId}`)
 
         const { pageId } = vals
         /**

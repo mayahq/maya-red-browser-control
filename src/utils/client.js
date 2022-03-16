@@ -12,7 +12,7 @@ const BROWSER_START_STOP_TIMEOUT = 60 * 1000
 const SERVER_HEARTBEAT_DURATION = 30 * 1000
 
 class LocalInstanceControl {
-    static version = 2
+    static version = 1
 
     constructor() {
         const mayaDir = process.env.NODE_ENV === 'development' ? '.mayadev' : '.maya'
@@ -20,7 +20,7 @@ class LocalInstanceControl {
         this.ipcComm = null
         this.ipc = null
         this.db = localDb({
-            root: path.join(os.homedir(), mayaFolder, 'db/browserAutomation')
+            root: path.join(os.homedir(), mayaDir, 'db/browserAutomation')
         })
     }
 
@@ -52,53 +52,74 @@ class LocalInstanceControl {
                         default: return resolve()
                     }
                 })
-                controllerProc.send({
-                    type: 'START_CONTROLLER'
-                })
             } catch (e) {
                 reject(new Error('Unable to start maya browser controller'))
             }
         })
     }
 
+    async _setServerVersion(serverPort) {
+        console.log('Setting server version')
+        await axios.post(`http://localhost:${serverPort}/set_version`, {
+            version: LocalInstanceControl.version
+        })
+        console.log('Set server version')
+    }
+
     async init() {
+        // console.log('Initialising browser control client')
+        await this.db.ensureHierarchy({
+            serverInfo: 'BLOCK'
+        })
         const serverInfoBlock = this.db.block('serverInfo')
+
         return await serverInfoBlock.acquireLock(async () => {
-            const { serverPort } = serverInfoBlock.get({ serverPort: 32016 })
+            const { serverPort } = await serverInfoBlock.get({ serverPort: 32016 })
             const { running, version } = await this._isServerRunning(serverPort)
+            // console.log('Server version:', version)
             if (!running) {
-                console.log('Server not running, so starting')
-                return await this._startServer()
+                // console.log('Server not running, so starting')
+                await this._startServer()
             }
             
+            const res = await serverInfoBlock.get({ serverPort: 32016 })
+
             // If control server is an older version, kill it and start
             // a newer one
             if (version < LocalInstanceControl.version || version === undefined) {
-                await this.killController()
+                // console.log('Version mismatch. Restarting controller')
+                await this.killController({ lock: false })
                 await new Promise(res => setTimeout(res, 1000))
                 await this._startServer()
+                await this._setServerVersion(res.serverPort)
             }
 
-            const res = serverInfoBlock.get({ serverPort: 32016 })
+            // console.log('Browser control server running')
             return res.serverPort
         })
 
     }
 
-    async killController() {
+    async killController({ lock } = { lock: true }) {
         try {
             const serverInfoBlock = this.db.block('serverInfo')
-            const { serverPort } = await serverInfoBlock.lockAndGet({ serverPort: 32016 })
+            
+            // Sometimes we wanna do this without a lock, just in case the calling function
+            // has already acquired one
+            const getFn = lock ? 'lockAndGet' : 'get'
+            const { serverPort } = await serverInfoBlock[getFn]({ serverPort: 32016 })
+
             await axios.post(`http://localhost:${serverPort}/kill_controller`)
         } catch (e) {
-            console.log('Error killing controller:', e)
             return
         }
     }
 
     async startBrowser(opts, timeout = BROWSER_START_STOP_TIMEOUT) {
         const serverPort = await this.init()
-        const res = await axios.post(`http://localhost:${serverPort}/start_browser`)
+        const res = await axios.post(`http://localhost:${serverPort}/start_browser`, {
+            opts
+        })
         const data = res.data
         if (data.status !== 'STARTED') {
             throw new Error(`Error starting browser: ${data.error}`)
@@ -130,6 +151,17 @@ class LocalInstanceControl {
 }
 
 // const lic = new LocalInstanceControl()
+// async function test() {
+//     const { connectionId } = await lic.startBrowser({ headless: false })
+//     setTimeout(() => {
+//         console.log('Asking controller to stop browser')
+//         lic.stopBrowser({connectionId})
+//     }, 5000)
+// }
+
+// test()
+
+
 // lic.init()
 //     .then(async () => {
 //         await lic.killController()

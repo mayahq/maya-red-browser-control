@@ -43,7 +43,7 @@ class MayaPuppeteerFileUpload extends Node {
         const context = this._node.context()
         
         const { inputXpath: xpath, timeout, index, pathToFile, pageId } = vals
-        const pages = context.flow.get(`_pages::${msg._msgid}`)
+        const pages = context.global.get(`_pages::${msg._connectionId}`)
         const page = pages[pageId]
 
         console.log('xpath', xpath)

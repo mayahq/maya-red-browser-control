@@ -11,7 +11,7 @@ const PuppeteerControlServer = require('./controller')
 // const KILL_TIMEOUT = 5 * 60 * 1000 // 5 minutes
 const KILL_TIMEOUT = 5 * 60 * 1000 // 10 seconds
 const MINUTE = 60*1000
-const VERSION = 1
+let VERSION = 1
 
 const app = express()
 app.use(express.json())
@@ -38,6 +38,13 @@ app.get('/healthcheck', (req, res) => {
         version: VERSION
     }
     return res.send(response)
+})
+
+app.post('/set_version', (req, res) => {
+    VERSION = req.body.version
+    return res.send({
+        status: 'OK'
+    })
 })
 
 app.post('/start_browser', async (req, res) => {
@@ -76,11 +83,15 @@ app.post('/stop_browser', async (req, res) => {
 })
 
 app.post('/kill_controller', async (req, res) => {
-    res.send({
-        status: 'KILLED'
-    })
     setTimeout(() => process.exit(0), 500)
 })
+
+function log(req, res, next) {
+    console.log(req.method, req.path)
+    next()
+}
+
+app.use(log)
 
 async function startServer() {
     await db.ensureHierarchy({
@@ -96,6 +107,9 @@ async function startServer() {
 
     app.listen(freePort, () => {
         console.log(`Puppeteer control server running on :${freePort}`)
+        process.send({
+            type: 'CONTROLLER_STARTED'
+        })
         status.started = true
     })
 }
@@ -103,23 +117,23 @@ async function startServer() {
 // Start server as soon as the process starts
 startServer()
 
-// Give the parent process a way to wait for server start
-process.on('message', async (msg) => {
-    console.log('Message from starting client:', msg)
-    switch (msg.type) {
-        case 'START_CONTROLLER': {
-            const interval = setInterval(() => {
-                if (status.started) {
-                    process.send({
-                        type: 'CONTROLLER_STARTED'
-                    })
-                    return clearInterval(interval)
-                }
-            }, 50)
-        }
-        case 'STOP_CONTROLLER': {
-            process.exit()
-        }
-        default: return
-    }
-})
+// // Give the parent process a way to wait for server start
+// process.on('message', async (msg) => {
+//     console.log('Message from starting client:', msg)
+//     switch (msg.type) {
+//         case 'START_CONTROLLER': {
+//             const interval = setInterval(() => {
+//                 if (status.started) {
+//                     process.send({
+//                         type: 'CONTROLLER_STARTED'
+//                     })
+//                     return clearInterval(interval)
+//                 }
+//             }, 50)
+//         }
+//         case 'STOP_CONTROLLER': {
+//             process.exit()
+//         }
+//         default: return
+//     }
+// })

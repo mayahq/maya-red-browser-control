@@ -47,12 +47,11 @@ class Connect extends Node {
         const connectionType = vals.connectionType.selected
 
         const context = this._node.context()
-        console.log(context, context.flow)
 
         let browser
         if (connectionType === 'new') {
             const browserClient = new LocalInstanceControl()
-            await browserClient.init()
+            // await browserClient.init()
             const { showBrowser } = vals.connectionType.childValues
             try {
                 const { connectionId, details } = await browserClient.startBrowser({
@@ -67,8 +66,6 @@ class Connect extends Node {
                 msg.__error = e
                 msg.__isError = true
             }
-
-            await browserClient.disconnectFromController()
         } else {
             const wsEndpoint = vals.connectionType.childValues.link
             browser = await puppeteer.connect({
@@ -76,8 +73,8 @@ class Connect extends Node {
             })
         }
 
-        context.flow.set(`_browser::${msg._msgid}`, browser)
-        context.flow.set(`_pages::${msg._msgid}`, [])
+        context.global.set(`_browser::${msg._connectionId}`, browser)
+        context.global.set(`_pages::${msg._connectionId}`, [])
         return msg
     }
 }
