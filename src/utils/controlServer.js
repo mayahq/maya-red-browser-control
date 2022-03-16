@@ -24,7 +24,9 @@ const db = localDb({
     root: path.join(os.homedir(), mayaFolder, 'db/browserAutomation')
 })
 
-let started = false
+const status = {
+    started: false
+}
 
 function generateId() {
     return crypto.randomBytes(8).toString('hex')
@@ -82,28 +84,32 @@ app.post('/kill_controller', async (req, res) => {
 
 async function startServer() {
     await db.ensureHierarchy({
-        connections: 'BLOCK'
+        serverInfo: 'BLOCK'
     })
-    const connBlock = db.block('connections')
+    const serverInfoBlock = db.block('serverInfo')
     const [freePort] = await fp(32016)
-    connBlock.lockAndUpdate({
+    
+    // No locking here, that's the responsibility of the client
+    serverInfoBlock.update({
         serverPort: { $set: freePort }
     })
 
     app.listen(freePort, () => {
         console.log(`Puppeteer control server running on :${freePort}`)
-        started = true
+        status.started = true
     })
 }
 
+// Start server as soon as the process starts
 startServer()
 
+// Give the parent process a way to wait for server start
 process.on('message', async (msg) => {
     console.log('Message from starting client:', msg)
     switch (msg.type) {
         case 'START_CONTROLLER': {
             const interval = setInterval(() => {
-                if (started) {
+                if (status.started) {
                     process.send({
                         type: 'CONTROLLER_STARTED'
                     })

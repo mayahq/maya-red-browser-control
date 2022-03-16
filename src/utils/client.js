@@ -3,6 +3,10 @@ const path = require('path')
 const fs = require('fs')
 const { fork, spawn } = require('child_process');
 const { default: ipc, IPCModule } = require('node-ipc')
+const xios = require('axios');
+const axios = require('axios')
+const { localDb } = require('@mayahq/maya-db')
+
 
 const BROWSER_START_STOP_TIMEOUT = 60 * 1000
 const SERVER_HEARTBEAT_DURATION = 30 * 1000
@@ -15,52 +19,28 @@ class LocalInstanceControl {
         this.sockpath = path.join(os.homedir(), `${mayaDir}/pupsock`)
         this.ipcComm = null
         this.ipc = null
+        this.db = localDb({
+            root: path.join(os.homedir(), mayaFolder, 'db/browserAutomation')
+        })
     }
 
-    _isServerRunning() {
-        return new Promise((resolve, reject) => {
-            const testIPC = new IPCModule()
-            testIPC.config.silent = true
-            testIPC.config.stopRetrying = 1
-            
-            const id = (Math.random() * 100000000).toString()
-            const versionCheckMessage = {
-                id: id,
-                type: 'maya::controller_version'
+    async _isServerRunning(serverPort) {
+        try {
+            const res = await axios.get(`http://localhost:${serverPort}/healthcheck`)
+            if (res.data.status === 'OK') {
+                return { running: true, version: res.data.version, serverPort: serverPort }
+            } else {
+                return { running: false }
             }
-
-            const tm = setTimeout(() => resolve({ running: false }), 3000)
-            testIPC.connectTo(
-                'ping',
-                this.sockpath,
-                () => {
-                    testIPC.of.ping.on(`maya::controller_version::${id}`, (msg) => {
-                        testIPC.disconnect('ping')
-                        clearTimeout(tm)
-                        resolve({ running: true, version: msg.version })
-                    })
-
-                    testIPC.of.ping.on('connect', () => {
-                        testIPC.of.ping.emit('maya::controller_version', versionCheckMessage)
-                    })
-
-                    testIPC.of.ping.on('error', (e) => {
-                        try {
-                            testIPC.disconnect('ping')
-                        } catch (e) {}
-                        testIPC.config.stopRetrying = true
-                        clearTimeout(tm)
-                        resolve({ running: false })
-                    })
-                }
-            )
-        })
+        } catch (e) {
+            return { running: false }
+        }
     }
 
     _startServer() {
         return new Promise((resolve, reject) => {
             try {
-                const controllerPath = path.join(__dirname, 'controller.js')
+                const controllerPath = path.join(__dirname, 'controlServer.js')
                 const controllerProc = fork(controllerPath, {
                     detached: true
                 })
@@ -81,197 +61,85 @@ class LocalInstanceControl {
         })
     }
 
-    getServerVersion() {
-        return new Promise((resolve, reject) => {
-            try {
-                const id = (Math.random() * 100000000).toString()
-                const versionCheckMessage = {
-                    id: id,
-                    type: 'maya::controller_version'
-                }
-
-                const tm = setTimeout(() => resolve(-1), 3000)
-                this.ipc.of.mayaBrowserControl.once(`maya::controller_version::${id}`, () => {
-                    resolve(msg.version)
-                    clearTimeout(tm)
-                })
-                this.ipc.of.mayaBrowserControl.emit('maya::controller_version', versionCheckMessage)
-            } catch (e) {
-                resolve(-1)
-            }
-        })
-    }
-
     async init() {
-        const { running, version } = await this._isServerRunning()
-        if (!running) {
-            console.log('Server not running, so starting')
-            await this._startServer()
-        }
+        const serverInfoBlock = this.db.block('serverInfo')
+        return await serverInfoBlock.acquireLock(async () => {
+            const { serverPort } = serverInfoBlock.get({ serverPort: 32016 })
+            const { running, version } = await this._isServerRunning(serverPort)
+            if (!running) {
+                console.log('Server not running, so starting')
+                return await this._startServer()
+            }
+            
+            // If control server is an older version, kill it and start
+            // a newer one
+            if (version < LocalInstanceControl.version || version === undefined) {
+                await this.killController()
+                await new Promise(res => setTimeout(res, 1000))
+                await this._startServer()
+            }
 
-        // If control server is an older version, kill it and start
-        // a newer one
-        if (version < LocalInstanceControl.version || version === undefined) {
-            await this.killController()
-            await new Promise(res => setTimeout(res, 1000))
-            await this._startServer()
-        }
-
-        const ipcMod = new IPCModule()
-        ipcMod.config.silent = true
-        this.ipc = ipcMod
-
-        await new Promise((resolve, reject) => {
-            ipcMod.connectTo(
-                'mayaBrowserControl',
-                this.sockpath,
-                () => {
-                    ipcMod.of.mayaBrowserControl.on('connect', () => {
-                        console.log('Connected to maya puppeteer controller')
-                        resolve()
-                    })
-
-                    ipcMod.of.mayaBrowserControl.on('disconnect', () => {
-                        console.log('Disconnected from maya puppeteer controller')
-                    })
-
-                    ipcMod.of.mayaBrowserControl.on('error', (e) => {
-                        console.log('Error connecting to controller', e)
-                    })
-
-                }
-            )
+            const res = serverInfoBlock.get({ serverPort: 32016 })
+            return res.serverPort
         })
 
     }
 
     async killController() {
-        const { running } = await this._isServerRunning()
-        if (!running) {
+        try {
+            const serverInfoBlock = this.db.block('serverInfo')
+            const { serverPort } = await serverInfoBlock.lockAndGet({ serverPort: 32016 })
+            await axios.post(`http://localhost:${serverPort}/kill_controller`)
+        } catch (e) {
+            console.log('Error killing controller:', e)
             return
         }
-
-        const killIPC = new IPCModule()
-        
-        await new Promise((resolve, reject) => {
-            killIPC.connectTo(
-                'kill',
-                this.sockpath,
-                () => {
-                    killIPC.of.kill.on('connect', () => {
-                        const id = (Math.random() * 100000000).toString()
-                        killIPC.of.kill.once(`maya::controller_kill::${id}`, (msg) => {
-                            if (msg.status === 'KILLED') {
-                                console.log('Controller process killed')
-                            } else {
-                                console.log('Error killing controller process')
-                            }
-                            resolve()
-                        })
-                        killIPC.of.kill.emit('maya::controller_kill', { id })
-                    })
-
-                    killIPC.of.kill.on('error', (e) => reject(e))
-                }
-            )
-        })
-
-        return
     }
 
-    startBrowser(opts, timeout = BROWSER_START_STOP_TIMEOUT) {
-        return new Promise((resolve, reject) => {
-            const id = (Math.random() * 100000000).toString()
-            const browserStartMessage = {
-                id: id,
-                type: 'maya::browser_start',
-                payload: opts // Provided to puppeteer.launch
+    async startBrowser(opts, timeout = BROWSER_START_STOP_TIMEOUT) {
+        const serverPort = await this.init()
+        const res = await axios.post(`http://localhost:${serverPort}/start_browser`)
+        const data = res.data
+        if (data.status !== 'STARTED') {
+            throw new Error(`Error starting browser: ${data.error}`)
+        }
+
+        return {
+            connectionId: data.connectionId,
+            details: data
+        }
+    }
+
+    async stopBrowser({ connectionId, force }, timeout = BROWSER_START_STOP_TIMEOUT) {
+        const serverPort = await this.init()
+        const request = {
+            method: 'post',
+            url: `http://localhost:${serverPort}/stop_browser`,
+            data: {
+                connectionId,
+                opts: { force }
             }
-            this.ipc.of.mayaBrowserControl.emit('maya::browser_start', browserStartMessage)
-            const tm = setTimeout(() => reject({ error: 'Timed out' }), timeout)
+        }
 
-            this.ipc.of.mayaBrowserControl.once(`maya::browser_start::${id}`, (msg) => {
-                clearTimeout(tm)
-                switch (msg.status) {
-                    case 'STARTED': {
-                        console.log('Browser was started')
-                        return resolve({ connectionId: id, details: msg })
-                    }
-                    case 'ALREADY_RUNNING': {
-                        console.log('Browser was already running')
-                        return resolve({ connectionId: id, details: msg })
-                    }
-                    case 'ERROR': {
-                        console.log('Error starting browser:', msg.error)
-                        return reject(msg.error)
-                    }
-                    default: {
-                        console.log('Unknown error starting browser. Message received from controller:', msg)
-                        return reject(msg)
-                    }
-                }
-            })
-        })
-    }
-
-    stopBrowser({ connectionId, force }, timeout = BROWSER_START_STOP_TIMEOUT) {
-        return new Promise((resolve, reject) => {
-            const id = (Math.random() * 100000000).toString()
-            const browserStopMessage = {
-                id: id,
-                connectionId: connectionId,
-                payload: {
-                    force
-                },
-                type: 'maya::browser_stop'
-            }
-            this.ipc.of.mayaBrowserControl.emit('maya::browser_stop', browserStopMessage)
-            const tm = setTimeout(() => reject({ error: 'Timed out' }), timeout)
-            
-            this.ipc.of.mayaBrowserControl.once(`maya::browser_stop::${id}`, (msg) => {
-                clearTimeout(tm)
-                switch (msg.status) {
-                    case 'STOPPED': {
-                        console.log('Browser was stopped')
-                        // this.disconnectFromController()
-                        return resolve()
-                    }
-                    case 'ALREADY_STOPPED': {
-                        console.log('Browser was already stopped')
-                        // this.disconnectFromController()
-                        return resolve()
-                    }
-                    case 'ERROR': {
-                        console.log('Error stopping browser:', msg.error)
-                        return reject(msg.error)
-                    }
-                    default: {
-                        console.log('Unknown error stopping browser. Message received from controller:', msg)
-                        return reject(msg)
-                    }
-                }
-            })
-        })
-    }
-
-    disconnectFromController() {
-        try {
-            this.ipc.disconnect('mayaBrowserControl')
-        } catch (e) {}
+        const res = await axios(request)
+        const data = res.data
+        if (data.status === 'ERROR') {
+            throw new Error(`Error stopping browser: ${data.error}`)
+        }
     }
 }
 
-const lic = new LocalInstanceControl()
-lic.init()
-    .then(async () => {
-        await lic.killController()
-        process.exit(0)
-        return
+// const lic = new LocalInstanceControl()
+// lic.init()
+//     .then(async () => {
+//         await lic.killController()
+//         process.exit(0)
+//         return
 
-        const {connectionId} = await lic.startBrowser({ headless: false })
-        setTimeout(async () => {
-            await lic.stopBrowser({ connectionId })
-        }, 7000)
-    })
+//         const {connectionId} = await lic.startBrowser({ headless: false })
+//         setTimeout(async () => {
+//             await lic.stopBrowser({ connectionId })
+//         }, 7000)
+//     })
 
 module.exports = LocalInstanceControl
