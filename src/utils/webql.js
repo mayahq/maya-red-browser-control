@@ -136,7 +136,7 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
         }
     
         if (typeof val === 'string') {
-            const xpath = appendTextFn(val)
+            // const xpath = appendTextFn(val)
             let ele = null
             try {
                 const res = await getXpathElems(parent, xpath, timeout)

@@ -33,7 +33,7 @@ class Connect extends Node {
                     },
                     existing: {
                         link: new fields.Typed({ type: 'str', allowedTypes: ['str', 'msg', 'global', 'flow'], displayName: 'WS link' })
-                    }
+                    },
                 }
             })
         },

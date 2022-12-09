@@ -27,7 +27,8 @@
       "maya-puppeteer-page": "src/nodes/mayaPuppeteerPage/mayaPuppeteerPage.node.js",
       "maya-puppeteer-execute-function": "src/nodes/mayaPuppeteerExecuteFunction/mayaPuppeteerExecuteFunction.node.js",
       "maya-puppeteer-scrape": "src/nodes/mayaPuppeteerScrape/mayaPuppeteerScrape.node.js",
-      "maya-puppeteer-query": "src/special-nodes/mayaBrowserQuery/mayaPuppeteerQuery.js"
+      "maya-puppeteer-query": "src/special-nodes/mayaBrowserQuery/mayaPuppeteerQuery.js",
+      "maya-puppeteer-set-cookie": "src/nodes/mayaPuppeteerSetCookie/mayaPuppeteerSetCookie.node.js"
     }
   },
   "mayaDetails": {
@@ -48,7 +49,7 @@
   },
   "dependencies": {
     "@mayahq/maya-db": "^0.0.4",
-    "@mayahq/module-sdk": "^2.0.9",
+    "@mayahq/module-sdk": "^2.3.0",
     "axios": "^0.21.4",
     "chrome-launcher": "^0.15.0",
     "express": "^4.17.3",
