@@ -10,61 +10,71 @@
                 value: false
             },
             pageId: {
-                value: "pageIds[0]"
+                value: "pageIds[0]",
+                required: false
             },
             payloadTypepageId: {
                 value: "msg"
             },
             typeText: {
-                value: ""
+                value: "",
+                required: false
             },
             payloadTypetypeText: {
                 value: "str"
             },
             typeDelay: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypetypeDelay: {
                 value: "num"
             },
             typeXpath: {
-                value: "typeXpath"
+                value: "typeXpath",
+                required: false
             },
             payloadTypetypeXpath: {
                 value: "msg"
             },
             typeTimeout: {
-                value: "2000"
+                value: "2000",
+                required: false
             },
             payloadTypetypeTimeout: {
                 value: "num"
             },
             typeIndex: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypetypeIndex: {
                 value: "num"
             },
             kpKey: {
-                value: ""
+                value: "",
+                required: false
             },
             payloadTypekpKey: {
                 value: "str"
             },
             kpDelay: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypekpDelay: {
                 value: "num"
             },
             kdKey: {
-                value: ""
+                value: "",
+                required: false
             },
             payloadTypekdKey: {
                 value: "str"
             },
             kuKey: {
-                value: ""
+                value: "",
+                required: false
             },
             payloadTypekuKey: {
                 value: "str"
@@ -264,8 +274,9 @@
 
 
             const actionTypeFieldSetNames = ["type", "keyPress", "keyDown", "keyUp"]
+            const nameMap = {}
             actionTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-actionType").val(this.actionType)
@@ -355,7 +366,7 @@
         <input type="hidden" id="node-input-payloadTypepageId">
     </div>
     <div class="form-row">
-        <label for="node-input-actionType">actionType</label>
+        <label for="node-input-actionType">Action</label>
         <select type="text" id="node-input-actionType">
         </select>
     </div>

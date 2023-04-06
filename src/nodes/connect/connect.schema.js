@@ -28,12 +28,14 @@ class Connect extends Node {
         fields: {
             connectionType: new fields.SelectFieldSet({
                 fieldSets: {
-                    new: {
-                        showBrowser: new fields.Select({ options: ['yes', 'no'], displayName: 'Show browser', defaultVal: 'no' })
-                    },
                     existing: {
-                        link: new fields.Typed({ type: 'str', allowedTypes: ['str', 'msg', 'global', 'flow'], displayName: 'WS link' })
-                    },
+                        link: new fields.Typed({ 
+                            type: 'str',
+                            allowedTypes: ['str', 'msg', 'global', 'flow'], 
+                            displayName: 'Browser Websocket link',
+                            required: true
+                        })
+                    }
                 }
             })
         },

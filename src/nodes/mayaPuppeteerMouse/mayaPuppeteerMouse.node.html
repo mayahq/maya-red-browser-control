@@ -10,55 +10,64 @@
                 value: false
             },
             pageId: {
-                value: "pageIds[0]"
+                value: "pageIds[0]",
+                required: false
             },
             payloadTypepageId: {
                 value: "msg"
             },
             clickXpath: {
-                value: "clickXpath"
+                value: "clickXpath",
+                required: false
             },
             payloadTypeclickXpath: {
                 value: "msg"
             },
             clickTimeout: {
-                value: "2000"
+                value: "2000",
+                required: false
             },
             payloadTypeclickTimeout: {
                 value: "num"
             },
             clickIndex: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypeclickIndex: {
                 value: "num"
             },
             hoverXpath: {
-                value: "hoverXpath"
+                value: "hoverXpath",
+                required: false
             },
             payloadTypehoverXpath: {
                 value: "msg"
             },
             hoverTimeout: {
-                value: "2000"
+                value: "2000",
+                required: false
             },
             payloadTypehoverTimeout: {
                 value: "num"
             },
             hoverIndex: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypehoverIndex: {
                 value: "num"
             },
             verticalScrollAmount: {
-                value: "1000"
+                value: "1000",
+                required: false
             },
             payloadTypeverticalScrollAmount: {
                 value: "num"
             },
             horizontalScrollAmount: {
-                value: "1000"
+                value: "1000",
+                required: false
             },
             payloadTypehorizontalScrollAmount: {
                 value: "num"
@@ -67,13 +76,15 @@
                 value: "intoView"
             },
             scrollXpath: {
-                value: "/"
+                value: "/",
+                required: false
             },
             payloadTypescrollXpath: {
                 value: "str"
             },
             scrollIndex: {
-                value: "0"
+                value: "0",
+                required: false
             },
             payloadTypescrollIndex: {
                 value: "num"
@@ -255,8 +266,9 @@
 
 
             const scrollTypeFieldSetNames = ["intoView", "byAmount"]
+            const nameMap = {}
             scrollTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-scrollType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+                $("#node-input-scrollType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-scrollType").val(this.scrollType)
@@ -309,8 +321,9 @@
 
 
             const actionTypeFieldSetNames = ["click", "hover", "scroll"]
+            const nameMap = {}
             actionTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-actionType").val(this.actionType)
@@ -400,7 +413,7 @@
         <input type="hidden" id="node-input-payloadTypepageId">
     </div>
     <div class="form-row">
-        <label for="node-input-actionType">actionType</label>
+        <label for="node-input-actionType">Action</label>
         <select type="text" id="node-input-actionType">
         </select>
     </div>

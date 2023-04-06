@@ -10,7 +10,8 @@
                 value: false
             },
             url: {
-                value: "url"
+                value: "url",
+                required: false
             },
             payloadTypeurl: {
                 value: "msg"
@@ -19,13 +20,15 @@
                 value: "networkidle2"
             },
             vwidth: {
-                value: "1600"
+                value: "1600",
+                required: false
             },
             payloadTypevwidth: {
                 value: "num"
             },
             vheight: {
-                value: "900"
+                value: "900",
+                required: false
             },
             payloadTypevheight: {
                 value: "num"
@@ -105,8 +108,9 @@
 
 
             const viewportFieldSetNames = ["default", "custom"]
+            const nameMap = {}
             viewportFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-viewport").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+                $("#node-input-viewport").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-viewport").val(this.viewport)

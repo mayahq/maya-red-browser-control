@@ -9,17 +9,15 @@
             isProfileConfigNode: {
                 value: false
             },
-            showBrowser: {
-                value: "no"
-            },
             link: {
-                value: ""
+                value: "",
+                required: true
             },
             payloadTypelink: {
                 value: "str"
             },
             connectionType: {
-                value: "new"
+                value: "existing"
             },
         },
         inputs: 1,
@@ -31,12 +29,6 @@
         paletteLabel: "Connect",
         exportable: true,
         oneditprepare: function() {
-            const showBrowserselectFieldValues = ["yes", "no"]
-            showBrowserselectFieldValues.forEach((val) => {
-                $("#node-input-showBrowser").append($("<option></option>").attr("value", val).text(val))
-            })
-            $("#node-input-showBrowser").val(this.showBrowser)
-
             if (this.payloadTypelink === null) {
                 if (this.link === "") {
                     this.payloadTypelink = "date"
@@ -56,9 +48,10 @@
             $("#node-input-link").typedInput("type", this.payloadTypelink)
 
 
-            const connectionTypeFieldSetNames = ["new", "existing"]
+            const connectionTypeFieldSetNames = ["existing"]
+            const nameMap = {}
             connectionTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-connectionType").append($("<option></option>").attr("value", fieldSetName).text(fieldSetName))
+                $("#node-input-connectionType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-connectionType").val(this.connectionType)
@@ -93,17 +86,9 @@
         <select type="text" id="node-input-connectionType">
         </select>
     </div>
-    <div id="fieldset-new" style="padding-left: 10px;">
-        <div class="form-row">
-            <label for="node-input-showBrowser">Show browser</label>
-            <select type="text" id="node-input-showBrowser">
-            </select>
-        </div>
-    </div>
-
     <div id="fieldset-existing" style="padding-left: 10px;">
         <div class="form-row">
-            <label for="node-input-link">WS link</label>
+            <label for="node-input-link">Browser Websocket link</label>
             <input type="text" id="node-input-link"></input>
             <input type="hidden" id="node-input-payloadTypelink">
         </div>
