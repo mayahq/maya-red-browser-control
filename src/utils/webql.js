@@ -139,9 +139,10 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
             // const xpath = appendTextFn(val)
             let ele = null
             try {
-                const res = await getXpathElems(parent, xpath, timeout)
+                const res = await getXpathElems(parent, val, timeout)
                 ele = res[0]
             } catch (e) {
+                console.log('error here', e)
                 const err = new Error(`Invalid xpath: "${val}"`)
                 err.type = 'SYNTAX_ERROR'
                 err.description = `Invalid xpath: "${val}"`

@@ -266,9 +266,9 @@
 
 
             const scrollTypeFieldSetNames = ["intoView", "byAmount"]
-            const nameMap = {}
+            const nameMap_554 = {}
             scrollTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-scrollType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
+                $("#node-input-scrollType").append($("<option></option>").attr("value", fieldSetName).text(nameMap_554[fieldSetName] ? nameMap_554[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-scrollType").val(this.scrollType)
@@ -321,9 +321,9 @@
 
 
             const actionTypeFieldSetNames = ["click", "hover", "scroll"]
-            const nameMap1 = {}
+            const nameMap_459 = {}
             actionTypeFieldSetNames.forEach((fieldSetName) => {
-                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(nameMap[fieldSetName] ? nameMap[fieldSetName] : fieldSetName))
+                $("#node-input-actionType").append($("<option></option>").attr("value", fieldSetName).text(nameMap_459[fieldSetName] ? nameMap_459[fieldSetName] : fieldSetName))
             })
 
             $("#node-input-actionType").val(this.actionType)
