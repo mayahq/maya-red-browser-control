@@ -74,6 +74,7 @@ class MayaPuppeteerMouse extends Node {
             const page = pages[pageId]
             let elements
             try {
+                console.log('pages', pages, page, pageId)
                 elements = await getElementsWithXpath({
                     xpath, timeout, page
                 })

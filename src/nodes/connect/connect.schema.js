@@ -73,6 +73,7 @@ class Connect extends Node {
             browser = await puppeteer.connect({
                 browserWSEndpoint: wsEndpoint
             })
+            msg._connectionId = Date.now().toString(36) + Math.floor(Math.random() * 10000).toString(36)
         }
 
         context.global.set(`_browser::${msg._connectionId}`, browser)
