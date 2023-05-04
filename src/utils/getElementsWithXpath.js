@@ -29,7 +29,7 @@ async function getElementsWithXpath({ parent = null, page, xpath, timeout }) {
 
     if (elements.length === 0) {
         try {
-            await parent.waitForXpath(xpath, { timeout })
+            await parent.waitForXPath(xpath, { timeout })
             elements = await parent.$x(xpath)
         } catch (e) {
             console.log('xpath find err', e)
