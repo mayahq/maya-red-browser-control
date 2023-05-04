@@ -12,7 +12,7 @@ const puppeteer = require('puppeteer-core')
  * @returns 
  */
 async function getElementsWithXpath({ parent = null, page, xpath, timeout }) {
-    console.log('getElementsWithXpath', parent, page, page.waitForXPath)
+    console.log('getElementsWithXpath', parent, page, page?.waitForXPath)
     if (!parent) {
         parent = page
     }
