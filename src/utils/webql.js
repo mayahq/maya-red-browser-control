@@ -63,10 +63,10 @@ function appendTextFn(xpath) {
 const getXpathElems = async (parent, xpath, timeout = 0) => {
     try {
         const elems = await getElementsWithXpath({ parent, xpath, timeout })
-        console.log('getXpathElems elems', elems)
+        // console.log('getXpathElems elems', elems)
         return elems
     } catch (e) {
-        console.log('getXpathElems error', e)
+        // console.log('getXpathElems error', e)
         switch (e.type) {
             case 'INVALID_XPATH': throw e
             case 'NO_ELEMENTS_FOUND': return []
@@ -85,7 +85,7 @@ const getXpathElems = async (parent, xpath, timeout = 0) => {
  * @returns 
  */
 async function resolveXpathQuery(parent, query, timeout = 0) {
-    console.log('resolveXpathQuery', query)
+    // console.log('resolveXpathQuery', query)
     if (Array.isArray(query)) {
         if (query.length === 0) {
             return null
@@ -97,7 +97,7 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
             if (typeof nspec === 'string') {
                 const xpath = appendTextFn(nspec)
                 const elems = await getXpathElems(parent, xpath, timeout)
-                console.log('da elems', elems)
+                // console.log('da elems', elems)
                 
                 for (let j = 0; j < elems.length; j++) {
                     const elem = elems[j]
@@ -109,7 +109,7 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
                         tempRes.push('')
                     }
 
-                    console.log('tempres', tempRes)
+                    // console.log('tempres', tempRes)
                 }
                 continue
             }
