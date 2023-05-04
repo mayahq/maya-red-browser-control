@@ -39,6 +39,7 @@ async function getElementsWithXpath({ parent = null, page, xpath, timeout }) {
         }
     }
 
+    console.log('getElementsWithXpath elements', elements)
     return elements
 }
 

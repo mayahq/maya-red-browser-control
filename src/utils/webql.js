@@ -62,8 +62,11 @@ function appendTextFn(xpath) {
  */
 const getXpathElems = async (parent, xpath, timeout = 0) => {
     try {
-        return await getElementsWithXpath({ parent, xpath, timeout })
+        const elems = await getElementsWithXpath({ parent, xpath, timeout })
+        console.log('getXpathElems elems', elems)
+        return elems
     } catch (e) {
+        console.log('getXpathElems error', e)
         switch (e.type) {
             case 'INVALID_XPATH': throw e
             case 'NO_ELEMENTS_FOUND': return []
@@ -82,6 +85,7 @@ const getXpathElems = async (parent, xpath, timeout = 0) => {
  * @returns 
  */
 async function resolveXpathQuery(parent, query, timeout = 0) {
+    console.log('resolveXpathQuery', query)
     if (Array.isArray(query)) {
         if (query.length === 0) {
             return null
@@ -198,6 +202,7 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
  * @returns {Object}
  */
 async function evaluateQuery(page, query, timeout) {
+    console.log('evaluateQuery', query)
     return await resolveXpathQuery(page, query, timeout)
 }
 
