@@ -93,6 +93,7 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
             if (typeof nspec === 'string') {
                 const xpath = appendTextFn(nspec)
                 const elems = await getXpathElems(parent, xpath, timeout)
+                console.log('da elems', elems)
                 
                 for (let j = 0; j < elems.length; j++) {
                     const elem = elems[j]
@@ -103,6 +104,8 @@ async function resolveXpathQuery(parent, query, timeout = 0) {
                         // tempRes.push(tc)
                         tempRes.push('')
                     }
+
+                    console.log('tempres', tempRes)
                 }
                 continue
             }
